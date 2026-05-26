@@ -85,9 +85,28 @@ Deploy the generated `dist/` folder to your static host.
 - Prefer small, focused components and utilities.
 - Run linting and tests before opening pull requests.
 
+## Pull Request and Merge Policy
+
+- All changes must be submitted through a pull request. Direct pushes to `main` are not permitted.
+- Every pull request requires explicit approval from the repository owner before merge.
+- Self-approval and self-merge are not permitted for non-owner contributors.
+- Required status checks must pass before review and merge.
+- Pull requests must include a clear summary, testing notes, and deployment impact assessment.
+- Force-push to protected branches and bypassing review requirements are prohibited.
+
+## PR Guidelines (Strict)
+
+- Keep pull requests focused on one logical change set.
+- Include or update tests for all gameplay logic, AI behavior, and regression-prone code.
+- Confirm `npm run lint` and `npm run test` pass locally before requesting review.
+- Document any user-facing behavior changes and include screenshots for UI changes.
+- Resolve all review comments before requesting final owner approval.
+- Do not merge until owner approval is present and all required checks are green.
+
 ## Contributing
 
 1. Create a feature branch.
 2. Implement your change with tests where applicable.
 3. Run `npm run lint` and `npm run test`.
-4. Open a pull request with a clear summary.
+4. Open a pull request with a clear summary, testing notes, and impact details.
+5. Wait for repository owner approval before merge.
