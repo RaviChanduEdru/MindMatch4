@@ -10,6 +10,7 @@ import SimonGame from "./SimonGame.jsx";
 import MathGame from "./MathGame.jsx";
 import WordGame from "./WordGame.jsx";
 import StroopGame from "./StroopGame.jsx";
+import SpatialGame from "./SpatialGame.jsx";
 import ToastHost from "./ToastHost.jsx";
 import ParentDashboard from "./ParentDashboard.jsx";
 import Mascot from "./Mascot.jsx";
@@ -113,6 +114,13 @@ export default function App() {
     setScreen("game");
   };
 
+  const startSpatial = () => {
+    setGameId("spatial");
+    setSeedDaily(false);
+    setReversiDemo(false);
+    setScreen("game");
+  };
+
   const startSimon = () => {
     setGameId("simon");
     setSeedDaily(false);
@@ -187,6 +195,7 @@ export default function App() {
           onPlayMath={() => startMath()}
           onPlayWord={() => startWord()}
           onPlayStroop={() => startStroop()}
+          onPlaySpatial={() => startSpatial()}
           onOpenDashboard={() => setShowDashboard(true)}
           mathLevel={mathLevel}
           setMathLevel={(d) => {
@@ -270,6 +279,9 @@ export default function App() {
       )}
       {screen === "game" && gameId === "stroop" && (
         <StroopGame onBack={() => setScreen("home")} kidsMode={kidsMode} />
+      )}
+      {screen === "game" && gameId === "spatial" && (
+        <SpatialGame onBack={() => setScreen("home")} />
       )}
       {showDashboard && <ParentDashboard onClose={() => setShowDashboard(false)} />}
       <ToastHost />
