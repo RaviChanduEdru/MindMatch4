@@ -151,7 +151,7 @@ export default function App() {
 
   return (
     <div 
-      className={`app ${gameId === "reversi" || gameId === "battleship" || gameId === "gomoku" || gameId === "twenty48" || gameId === "memory" || gameId === "simon" || gameId === "math" || gameId === "word" || gameId === "stroop" ? "app-wide" : ""}`}
+      className={`app ${gameId === "reversi" || gameId === "battleship" || gameId === "gomoku" || gameId === "twenty48" || gameId === "memory" || gameId === "simon" || gameId === "math" || gameId === "word" || gameId === "stroop" || gameId === "spatial" ? "app-wide" : ""}`}
       data-game={screen === "home" ? "home" : gameId}
     >
       <div className="crt-scanlines" />

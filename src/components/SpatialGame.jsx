@@ -5,7 +5,6 @@ import {
   PUZZLES,
   buildOccupancy,
   canPlacePiece,
-  getPieceCells,
   getTargetSet,
   isSolved,
   normalizeShape,
@@ -26,7 +25,6 @@ export default function SpatialGame({ onBack }) {
   const targetSet = useMemo(() => getTargetSet(puzzle), [puzzle]);
   const occupancy = useMemo(() => buildOccupancy(puzzle, placements), [puzzle, placements]);
   const selectedPiece = puzzle.pieces.find((p) => p.id === selectedPieceId) || puzzle.pieces[0];
-  const unplacedPieces = puzzle.pieces.filter((piece) => !placements[piece.id]);
 
   useEffect(() => {
     if (end) return;
