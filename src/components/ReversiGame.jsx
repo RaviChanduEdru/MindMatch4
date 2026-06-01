@@ -4,6 +4,7 @@ import { recordGame } from "../utils/progress.js";
 import ReversiBoard from "./ReversiBoard.jsx";
 import GameTimer from "./GameTimer.jsx";
 import WinBanner from "./WinBanner.jsx";
+import { getFeatureFlags } from "../utils/featureFlags.js";
 import {
   BLACK,
   WHITE,
@@ -24,6 +25,7 @@ function playerName(player) {
 const RV_TIMER_PP = 450; // 7.5 min per player (2P mode)
 
 export default function ReversiGame({ startInDemo = false, mode = "ai", difficulty = "Hard", onBack, p1Name = "Player 1", p2Name = "Player 2" }) {
+  const boardFxV2 = getFeatureFlags().boardFxV2;
   const is2P = mode === "2p";
   const [board, setBoard] = useState(() => createReversiBoard());
   const [turn, setTurn] = useState(BLACK);
@@ -193,7 +195,7 @@ export default function ReversiGame({ startInDemo = false, mode = "ai", difficul
   const endEmoji = end === "black" ? "⚫" : end === "white" ? "⚪" : "🤝";
 
   return (
-    <div className="reversi-page">
+    <div className={`reversi-page${boardFxV2 ? " boardfx-v2-shell boardfx-v2-rv" : ""}`}>
       {/* ── Top bar: back + title + scores + controls ── */}
       <header className="rv-topbar">
         <div className="rv-topbar-left">

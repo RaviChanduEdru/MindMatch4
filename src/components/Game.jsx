@@ -5,6 +5,7 @@ import ResultModal from "./Modal.jsx";
 import GameTimer from "./GameTimer.jsx";
 import WinBanner from "./WinBanner.jsx";
 import { recordGame } from "../utils/progress.js";
+import { getFeatureFlags } from "../utils/featureFlags.js";
 import {
   ROWS,
   COLS,
@@ -26,6 +27,7 @@ import {
 const C4_TIMER_PP = 300; // 5 min per player (2P mode)
 
 export default function Game({ mode, seedDaily, difficulty = "Auto", onBack, p1Name = "Player 1", p2Name = "Player 2" }) {
+  const boardFxV2 = getFeatureFlags().boardFxV2;
   const is2P = mode === "2p";
   const [board, setBoard] = useState(() => emptyBoard());
   const [turn, setTurn] = useState(1);
@@ -400,7 +402,7 @@ export default function Game({ mode, seedDaily, difficulty = "Auto", onBack, p1N
     mode === "ai" ? turn === 1 && window.dropPiece(c) : window.dropPiece(c);
 
   return (
-    <>
+    <div className={boardFxV2 ? "boardfx-v2-shell" : undefined}>
       <div className="modebar">
         <button onClick={onBack} title="Back to Home">🏠</button>
         <button onClick={reset} title="New game">🔄 New</button>
@@ -467,6 +469,6 @@ export default function Game({ mode, seedDaily, difficulty = "Auto", onBack, p1N
         }
         onBack={onBack}
       />
-    </>
+    </div>
   );
 }
