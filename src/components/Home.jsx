@@ -5,6 +5,10 @@ import {
   filterGames,
 } from "../utils/gameCatalog.js";
 import ProgressBadge from "./ProgressBadge.jsx";
+import HeroCanvas3D from "./HeroCanvas3D.jsx";
+import { getFeatureFlags } from "../utils/featureFlags.js";
+import { detectVisualTier } from "../utils/capability.js";
+import { readStoredJSON, readStoredString } from "../utils/homeStability.js";
 
 const LEVELS = [
   { id: "Easy", desc: "Relaxed play, great for beginners" },
@@ -47,7 +51,7 @@ export default function Home({
   p2Name, setP2Name,
 }) {
   const [soundOn, setSoundOn] = useState(
-    () => JSON.parse(localStorage.getItem("mm4_sound_on") || "true")
+    () => readStoredJSON("mm4_sound_on", true)
   );
   const [picked, setPicked] = useState(null);
   const [selectedMode, setSelectedMode] = useState("ai");
@@ -58,10 +62,10 @@ export default function Home({
 
   // Navigation state — persisted
   const [ageGroup, setAgeGroup] = useState(
-    () => localStorage.getItem("mm4_age_group") || "all"
+    () => readStoredString("mm4_age_group", "all")
   );
   const [category, setCategory] = useState(
-    () => localStorage.getItem("mm4_category") || "all"
+    () => readStoredString("mm4_category", "all")
   );
   const [query, setQuery] = useState("");
 
@@ -76,6 +80,9 @@ export default function Home({
   const selectedReversiLevel = LEVELS.find((x) => x.id === reversiDifficulty) || LEVELS[4];
   const selectedBsLevel = LEVELS.find((x) => x.id === battleshipDifficulty) || LEVELS[4];
   const selectedGomokuLevel = LEVELS.find((x) => x.id === gomokuDifficulty) || LEVELS[4];
+
+  const featureFlags = useMemo(() => getFeatureFlags(), []);
+  const visualCaps = useMemo(() => detectVisualTier(), []);
 
   const filtered = useMemo(
     () => filterGames({ ageGroup, category, query }),
@@ -98,14 +105,28 @@ export default function Home({
         {!picked && (
           <>
             <div className="home-hero">
-              <h2 className="home-hero-title">
-                {kidsMode ? "🌟 Brain Games for Kids 🌟" : "✦ MindMatch Hub ✦"}
-              </h2>
-              <p className="home-hero-sub">
-                {kidsMode
-                  ? "Pick a game and start playing!"
-                  : "Train your brain · For ages 1 to 99"}
-              </p>
+              <div className="home-hero-copy">
+                <div className="home-hero-kicker">MindMatch 4 · New Generation UI</div>
+                <h2 className="home-hero-title">
+                  {kidsMode ? "Brain Games. Big Imagination." : "MindMatch. Now in Motion."}
+                </h2>
+                <p className="home-hero-sub">
+                  {kidsMode
+                    ? "Pick a game, tap play, and watch the board come alive."
+                    : "Chrome-first next-gen visuals with zero changes to your game progress."}
+                </p>
+                <div className="home-hero-kpis" aria-hidden="true">
+                  <span className="home-hero-kpi">10 Games</span>
+                  <span className="home-hero-kpi">Offline Ready</span>
+                  <span className="home-hero-kpi">Adaptive Difficulty</span>
+                </div>
+                <div className="home-hero-caption">
+                  {visualCaps.reason}
+                </div>
+              </div>
+              {featureFlags.hero3d && (
+                <HeroCanvas3D caps={visualCaps} kidsMode={kidsMode} />
+              )}
             </div>
 
             <div className="home-toggles">

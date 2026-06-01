@@ -4,6 +4,7 @@ import { recordGame } from "../utils/progress.js";
 import GomokuBoard from "./GomokuBoard.jsx";
 import GameTimer from "./GameTimer.jsx";
 import WinBanner from "./WinBanner.jsx";
+import { getFeatureFlags } from "../utils/featureFlags.js";
 import {
   BLACK,
   WHITE,
@@ -25,6 +26,7 @@ function playerName(p) {
 const GK_TIMER_PP = 600; // 10 min per player (2P)
 
 export default function GomokuGame({ mode = "ai", difficulty = "Hard", onBack, p1Name = "Player 1", p2Name = "Player 2" }) {
+  const boardFxV2 = getFeatureFlags().boardFxV2;
   const is2P = mode === "2p";
   const [board, setBoard] = useState(() => createGomokuBoard());
   const [turn, setTurn] = useState(BLACK);
@@ -169,7 +171,7 @@ export default function GomokuGame({ mode = "ai", difficulty = "Hard", onBack, p
   const endEmoji = end === "black" ? "⚫" : end === "white" ? "⚪" : "🤝";
 
   return (
-    <div className="gomoku-page">
+    <div className={`gomoku-page${boardFxV2 ? " boardfx-v2-shell boardfx-v2-gk" : ""}`}>
       {/* ── Top bar ── */}
       <header className="gk-topbar">
         <div className="gk-topbar-left">
