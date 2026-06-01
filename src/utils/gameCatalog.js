@@ -182,6 +182,30 @@ export const GAMES = [
   },
 ];
 
+export const GAME_ROUTES = {
+  simon: "simon-says",
+  math: "math-sprint",
+  memory: "memory-match",
+  twenty48: "twenty48",
+  connect4: "connect-four",
+  spatial: "shape-fit",
+  gomoku: "gomoku",
+  reversi: "reversi",
+  battleship: "battleship",
+  word: "word-scramble",
+  stroop: "stroop-test",
+};
+
+export function getGameRoute(id) {
+  return GAME_ROUTES[id] || id;
+}
+
+export function getGameIdFromRoute(route) {
+  const normalized = (route || "").toLowerCase();
+  const match = Object.entries(GAME_ROUTES).find(([, slug]) => slug === normalized);
+  return match ? match[0] : null;
+}
+
 /** Filter helpers */
 export function filterGames({ ageGroup = "all", category = "all", query = "" } = {}) {
   const q = query.trim().toLowerCase();

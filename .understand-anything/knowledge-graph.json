@@ -1,0 +1,821 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "mindmatch4",
+    "languages": ["javascript", "jsx", "css", "html", "json"],
+    "frameworks": ["react", "vite", "jest", "pwa"],
+    "description": "React and Vite strategy game hub with Connect Four, Reversi, and Battleship, including adaptive AI, local multiplayer, and offline support.",
+    "analyzedAt": "2026-03-23T00:00:00.000Z",
+    "gitCommitHash": "6b1247a68e8f17cb9184e6998b9102bd1e5e2fc1"
+  },
+  "nodes": [
+    {
+      "id": "file:index.html",
+      "type": "file",
+      "name": "index.html",
+      "filePath": "index.html",
+      "lineRange": [1, 356],
+      "summary": "HTML shell for the app with metadata, favicons, and the root mount for the React application.",
+      "tags": ["entry", "html", "pwa"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:sw.js",
+      "type": "file",
+      "name": "sw.js",
+      "filePath": "sw.js",
+      "lineRange": [1, 52],
+      "summary": "Service worker that caches app assets and supports offline navigation for the deployed site.",
+      "tags": ["pwa", "service-worker", "offline"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:vite.config.js",
+      "type": "file",
+      "name": "vite.config.js",
+      "filePath": "vite.config.js",
+      "lineRange": [1, 9],
+      "summary": "Vite build configuration that sets the GitHub Pages base path and enables the React plugin.",
+      "tags": ["build", "vite", "config"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:package.json",
+      "type": "file",
+      "name": "package.json",
+      "filePath": "package.json",
+      "lineRange": [1, 40],
+      "summary": "Package manifest defining scripts, dependencies, and project metadata for the MindMatch4 app.",
+      "tags": ["manifest", "npm", "config"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:README.md",
+      "type": "file",
+      "name": "README.md",
+      "filePath": "README.md",
+      "lineRange": [1, 78],
+      "summary": "Project documentation describing the game hub, development workflow, and deployment expectations.",
+      "tags": ["docs", "overview", "onboarding"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:manifest.json",
+      "type": "file",
+      "name": "manifest.json",
+      "filePath": "manifest.json",
+      "lineRange": [1, 31],
+      "summary": "Web app manifest for installable PWA behavior, icons, and theme settings.",
+      "tags": ["pwa", "manifest", "install"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ai/adapter.js",
+      "type": "file",
+      "name": "adapter.js",
+      "filePath": "ai/adapter.js",
+      "lineRange": [1, 85],
+      "summary": "Adapter layer that translates board representations and exposes bridge helpers for plugin-style integration.",
+      "tags": ["ai", "adapter", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ai/analytics.js",
+      "type": "file",
+      "name": "analytics.js",
+      "filePath": "ai/analytics.js",
+      "lineRange": [1, 22],
+      "summary": "Analytics bridge that forwards custom game events to Google Analytics when a measurement ID is configured.",
+      "tags": ["analytics", "events", "integration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ai/challenge.js",
+      "type": "file",
+      "name": "challenge.js",
+      "filePath": "ai/challenge.js",
+      "lineRange": [1, 12],
+      "summary": "Produces a deterministic daily seed so Connect Four challenge games can start from a shared position.",
+      "tags": ["challenge", "seed", "daily"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:ai/coach.js",
+      "type": "file",
+      "name": "coach.js",
+      "filePath": "ai/coach.js",
+      "lineRange": [1, 42],
+      "summary": "High-level AI coach that chooses moves, computes hints, and updates player skill after a game ends.",
+      "tags": ["ai", "difficulty", "hints"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ai/engine.js",
+      "type": "file",
+      "name": "engine.js",
+      "filePath": "ai/engine.js",
+      "lineRange": [1, 92],
+      "summary": "Core Connect Four search engine implementing board utilities, win detection, and time-boxed negamax search.",
+      "tags": ["ai", "search", "connect-four"],
+      "complexity": "complex",
+      "languageNotes": "Uses alpha-beta style search primitives and column-major board arrays."
+    },
+    {
+      "id": "file:ai/mm4-plugin-wire.js",
+      "type": "file",
+      "name": "mm4-plugin-wire.js",
+      "filePath": "ai/mm4-plugin-wire.js",
+      "lineRange": [1, 49],
+      "summary": "DOM wiring layer that attaches hint and daily controls and emits custom MindMatch events for integrations.",
+      "tags": ["plugin", "events", "dom"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ai/mm4-plugin.js",
+      "type": "file",
+      "name": "mm4-plugin.js",
+      "filePath": "ai/mm4-plugin.js",
+      "lineRange": [1, 30],
+      "summary": "Exposes the MindMatch AI API on the window object for external use and lightweight in-page tooling.",
+      "tags": ["plugin", "api", "window"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:ai/rating.js",
+      "type": "file",
+      "name": "rating.js",
+      "filePath": "ai/rating.js",
+      "lineRange": [1, 20],
+      "summary": "Stores and updates the player's Elo-like skill rating and maps that rating to AI search parameters.",
+      "tags": ["rating", "difficulty", "storage"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/main.jsx",
+      "type": "file",
+      "name": "main.jsx",
+      "filePath": "src/main.jsx",
+      "lineRange": [1, 5],
+      "summary": "React entry point that mounts the root application component and loads global styles.",
+      "tags": ["entry", "react", "bootstrap"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/setup.js",
+      "type": "file",
+      "name": "setup.js",
+      "filePath": "src/setup.js",
+      "lineRange": [1, 39],
+      "summary": "Client setup code that initializes plugin bridges, registers the service worker, and restores persisted theme state.",
+      "tags": ["setup", "pwa", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/styles.css",
+      "type": "file",
+      "name": "styles.css",
+      "filePath": "src/styles.css",
+      "lineRange": [1, 1830],
+      "summary": "Global stylesheet covering layout, themes, board visuals, overlays, and responsive behavior across the app.",
+      "tags": ["styles", "theme", "ui"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/components/App.jsx",
+      "type": "file",
+      "name": "App.jsx",
+      "filePath": "src/components/App.jsx",
+      "lineRange": [1, 124],
+      "summary": "Top-level screen controller that switches between the home screen and the three game experiences.",
+      "tags": ["react", "routing", "controller"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/BattleshipBoard.jsx",
+      "type": "file",
+      "name": "BattleshipBoard.jsx",
+      "filePath": "src/components/BattleshipBoard.jsx",
+      "lineRange": [1, 119],
+      "summary": "Battleship board renderer used for both fleet placement and attack targeting views.",
+      "tags": ["ui", "battleship", "board"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/BattleshipGame.jsx",
+      "type": "file",
+      "name": "BattleshipGame.jsx",
+      "filePath": "src/components/BattleshipGame.jsx",
+      "lineRange": [1, 568],
+      "summary": "Battleship controller that manages setup, battle turns, AI shooting, tension effects, and end-state handling.",
+      "tags": ["controller", "battleship", "gameplay"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/components/Board.jsx",
+      "type": "file",
+      "name": "Board.jsx",
+      "filePath": "src/components/Board.jsx",
+      "lineRange": [1, 86],
+      "summary": "Connect Four board presentation component with overlays, focus cues, and hazard indicators.",
+      "tags": ["ui", "connect-four", "board"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/Game.jsx",
+      "type": "file",
+      "name": "Game.jsx",
+      "filePath": "src/components/Game.jsx",
+      "lineRange": [1, 434],
+      "summary": "Connect Four game controller responsible for turns, timers, hints, autosave, and AI interaction.",
+      "tags": ["controller", "connect-four", "gameplay"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/components/GameTimer.jsx",
+      "type": "file",
+      "name": "GameTimer.jsx",
+      "filePath": "src/components/GameTimer.jsx",
+      "lineRange": [1, 48],
+      "summary": "Reusable countdown timer component used by all game modes with urgency thresholds and timeout callbacks.",
+      "tags": ["ui", "timer", "shared"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/HazardBadge.jsx",
+      "type": "file",
+      "name": "HazardBadge.jsx",
+      "filePath": "src/components/HazardBadge.jsx",
+      "lineRange": [1, 16],
+      "summary": "Small UI badge that warns players when a move opens a tactical hazard in Connect Four.",
+      "tags": ["ui", "badge", "connect-four"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Home.jsx",
+      "type": "file",
+      "name": "Home.jsx",
+      "filePath": "src/components/Home.jsx",
+      "lineRange": [1, 294],
+      "summary": "Landing screen for choosing game mode, difficulty, sound settings, and player names.",
+      "tags": ["ui", "home", "navigation"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/Modal.jsx",
+      "type": "file",
+      "name": "Modal.jsx",
+      "filePath": "src/components/Modal.jsx",
+      "lineRange": [1, 27],
+      "summary": "Shared result modal for rematch, sharing, and returning home after a game ends.",
+      "tags": ["ui", "modal", "shared"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/ReversiBoard.jsx",
+      "type": "file",
+      "name": "ReversiBoard.jsx",
+      "filePath": "src/components/ReversiBoard.jsx",
+      "lineRange": [1, 76],
+      "summary": "Reversi board renderer with move labels, legal move highlighting, and piece display logic.",
+      "tags": ["ui", "reversi", "board"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/ReversiGame.jsx",
+      "type": "file",
+      "name": "ReversiGame.jsx",
+      "filePath": "src/components/ReversiGame.jsx",
+      "lineRange": [1, 288],
+      "summary": "Reversi controller that manages valid moves, disc flipping, timers, demo mode, and AI turns.",
+      "tags": ["controller", "reversi", "gameplay"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/components/WinBanner.jsx",
+      "type": "file",
+      "name": "WinBanner.jsx",
+      "filePath": "src/components/WinBanner.jsx",
+      "lineRange": [1, 40],
+      "summary": "Transient banner overlay that announces the winner and coordinates celebratory feedback.",
+      "tags": ["ui", "overlay", "shared"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/WinOverlay.jsx",
+      "type": "file",
+      "name": "WinOverlay.jsx",
+      "filePath": "src/components/WinOverlay.jsx",
+      "lineRange": [1, 46],
+      "summary": "Connect Four overlay that highlights the winning four-in-a-row line on the board.",
+      "tags": ["ui", "overlay", "connect-four"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/utils/battleshipHelpers.js",
+      "type": "file",
+      "name": "battleshipHelpers.js",
+      "filePath": "src/utils/battleshipHelpers.js",
+      "lineRange": [1, 278],
+      "summary": "Battleship rule engine covering grid creation, ship placement, shot resolution, and AI targeting strategies.",
+      "tags": ["rules", "battleship", "ai"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/utils/gameHelpers.js",
+      "type": "file",
+      "name": "gameHelpers.js",
+      "filePath": "src/utils/gameHelpers.js",
+      "lineRange": [1, 356],
+      "summary": "Connect Four support library providing board helpers, hints, heuristics, sharing text, and procedural audio utilities.",
+      "tags": ["rules", "connect-four", "audio"],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:src/utils/reversiHelpers.js",
+      "type": "file",
+      "name": "reversiHelpers.js",
+      "filePath": "src/utils/reversiHelpers.js",
+      "lineRange": [1, 211],
+      "summary": "Reversi rule helpers for move generation, disc flipping, end-game checks, and heuristic move selection.",
+      "tags": ["rules", "reversi", "ai"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/battleship.test.js",
+      "type": "file",
+      "name": "battleship.test.js",
+      "filePath": "tests/battleship.test.js",
+      "lineRange": [1, 103],
+      "summary": "Jest suite validating Battleship grid creation, placement rules, shot handling, and AI shot selection.",
+      "tags": ["tests", "battleship", "jest"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:tests/engine.test.js",
+      "type": "file",
+      "name": "engine.test.js",
+      "filePath": "tests/engine.test.js",
+      "lineRange": [1, 26],
+      "summary": "Jest tests for Connect Four winner detection, winning line extraction, and best-move search behavior.",
+      "tags": ["tests", "connect-four", "jest"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tests/reversi.test.js",
+      "type": "file",
+      "name": "reversi.test.js",
+      "filePath": "tests/reversi.test.js",
+      "lineRange": [1, 37],
+      "summary": "Jest coverage for Reversi move generation, flip application, and corner-preferring AI behavior.",
+      "tags": ["tests", "reversi", "jest"],
+      "complexity": "simple"
+    },
+    {
+      "id": "func:ai/engine.js:winner",
+      "type": "function",
+      "name": "winner",
+      "filePath": "ai/engine.js",
+      "summary": "Evaluates a Connect Four board and returns the winning side or a neutral result.",
+      "tags": ["connect-four", "rules", "search"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "func:ai/engine.js:bestMoveTimeboxed",
+      "type": "function",
+      "name": "bestMoveTimeboxed",
+      "filePath": "ai/engine.js",
+      "summary": "Runs bounded negamax search to choose the strongest move within a time budget.",
+      "tags": ["ai", "search", "negamax"],
+      "complexity": "complex",
+      "languageNotes": "This function favors stronger moves while respecting a hard time window for interactive play."
+    },
+    {
+      "id": "func:ai/coach.js:aiMove",
+      "type": "function",
+      "name": "aiMove",
+      "filePath": "ai/coach.js",
+      "summary": "Selects an AI move by combining skill parameters, legal moves, and engine search output.",
+      "tags": ["ai", "difficulty", "move-selection"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "func:ai/coach.js:computeHints",
+      "type": "function",
+      "name": "computeHints",
+      "filePath": "ai/coach.js",
+      "summary": "Computes tactical hints such as immediate wins, blocks, and strongest engine suggestions.",
+      "tags": ["hints", "ai", "connect-four"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "func:ai/rating.js:updateSkill",
+      "type": "function",
+      "name": "updateSkill",
+      "filePath": "ai/rating.js",
+      "summary": "Updates the stored skill rating after a result so later games adapt to the player.",
+      "tags": ["rating", "elo", "storage"],
+      "complexity": "simple"
+    },
+    {
+      "id": "func:src/components/App.jsx:App",
+      "type": "function",
+      "name": "App",
+      "filePath": "src/components/App.jsx",
+      "summary": "Composes the main application flow and decides which top-level screen to render.",
+      "tags": ["react", "app", "routing"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "func:src/components/Game.jsx:Game",
+      "type": "function",
+      "name": "Game",
+      "filePath": "src/components/Game.jsx",
+      "summary": "Runs the Connect Four game loop, including local actions, timers, AI turns, and persistence.",
+      "tags": ["connect-four", "controller", "react"],
+      "complexity": "complex"
+    },
+    {
+      "id": "func:src/components/ReversiGame.jsx:ReversiGame",
+      "type": "function",
+      "name": "ReversiGame",
+      "filePath": "src/components/ReversiGame.jsx",
+      "summary": "Runs the Reversi game state machine, including move legality, pass logic, and AI responses.",
+      "tags": ["reversi", "controller", "react"],
+      "complexity": "complex"
+    },
+    {
+      "id": "func:src/components/BattleshipGame.jsx:BattleshipGame",
+      "type": "function",
+      "name": "BattleshipGame",
+      "filePath": "src/components/BattleshipGame.jsx",
+      "summary": "Runs the Battleship setup and battle loop across both human and AI participants.",
+      "tags": ["battleship", "controller", "react"],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:src/utils/gameHelpers.js:Beep",
+      "type": "class",
+      "name": "Beep",
+      "filePath": "src/utils/gameHelpers.js",
+      "summary": "Procedural audio helper that synthesizes game sounds without shipping prerecorded media assets.",
+      "tags": ["audio", "web-audio", "utility"],
+      "complexity": "complex",
+      "languageNotes": "Uses Web Audio primitives to synthesize tones, noise, and layered effects at runtime."
+    },
+    {
+      "id": "func:src/utils/gameHelpers.js:computeLocalHints",
+      "type": "function",
+      "name": "computeLocalHints",
+      "filePath": "src/utils/gameHelpers.js",
+      "summary": "Produces lightweight local hint suggestions when the full AI hint bridge is not available.",
+      "tags": ["hints", "connect-four", "utility"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "func:src/utils/reversiHelpers.js:pickBestReversiMove",
+      "type": "function",
+      "name": "pickBestReversiMove",
+      "filePath": "src/utils/reversiHelpers.js",
+      "summary": "Chooses a Reversi move using board weights and difficulty tuning, preferring high-value squares such as corners.",
+      "tags": ["reversi", "ai", "heuristic"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "func:src/utils/battleshipHelpers.js:pickAIShot",
+      "type": "function",
+      "name": "pickAIShot",
+      "filePath": "src/utils/battleshipHelpers.js",
+      "summary": "Dispatches to difficulty-specific Battleship targeting strategies to choose the next AI shot.",
+      "tags": ["battleship", "ai", "targeting"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "module:react-ui",
+      "type": "module",
+      "name": "react-ui",
+      "summary": "Cluster of React components and presentation files that render the app shell and each game interface.",
+      "tags": ["ui", "react", "module"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "module:ai-engine",
+      "type": "module",
+      "name": "ai-engine",
+      "summary": "Cluster of AI search, rating, challenge, and plugin bridge files that support adaptive computer play.",
+      "tags": ["ai", "module", "search"],
+      "complexity": "complex"
+    },
+    {
+      "id": "concept:adaptive-difficulty",
+      "type": "concept",
+      "name": "adaptive-difficulty",
+      "summary": "The app tunes computer strength over time by storing player skill and converting it into search depth and blunder behavior.",
+      "tags": ["ai", "difficulty", "concept"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "concept:procedural-audio",
+      "type": "concept",
+      "name": "procedural-audio",
+      "summary": "Sound feedback is generated at runtime with code rather than loaded from asset files, reducing bundle dependencies.",
+      "tags": ["audio", "concept", "web-audio"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "concept:pwa-offline",
+      "type": "concept",
+      "name": "pwa-offline",
+      "summary": "The app is packaged as an installable web application with manifest metadata and cached offline support.",
+      "tags": ["pwa", "offline", "concept"],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    { "source": "file:src/main.jsx", "target": "file:src/components/App.jsx", "type": "imports", "direction": "forward", "description": "main.jsx mounts the App component.", "weight": 0.7 },
+    { "source": "file:src/main.jsx", "target": "file:src/styles.css", "type": "imports", "direction": "forward", "description": "main.jsx loads the global stylesheet.", "weight": 0.7 },
+    { "source": "file:src/components/App.jsx", "target": "file:src/components/Home.jsx", "type": "imports", "direction": "forward", "description": "App renders the home screen when no active game is selected.", "weight": 0.7 },
+    { "source": "file:src/components/App.jsx", "target": "file:src/components/Game.jsx", "type": "imports", "direction": "forward", "description": "App delegates Connect Four play to Game.jsx.", "weight": 0.7 },
+    { "source": "file:src/components/App.jsx", "target": "file:src/components/ReversiGame.jsx", "type": "imports", "direction": "forward", "description": "App delegates Reversi play to ReversiGame.jsx.", "weight": 0.7 },
+    { "source": "file:src/components/App.jsx", "target": "file:src/components/BattleshipGame.jsx", "type": "imports", "direction": "forward", "description": "App delegates Battleship play to BattleshipGame.jsx.", "weight": 0.7 },
+    { "source": "file:src/setup.js", "target": "file:ai/adapter.js", "type": "imports", "direction": "forward", "description": "setup.js loads the adapter bridge at startup.", "weight": 0.7 },
+    { "source": "file:src/setup.js", "target": "file:ai/mm4-plugin.js", "type": "imports", "direction": "forward", "description": "setup.js loads the public plugin API.", "weight": 0.7 },
+    { "source": "file:src/setup.js", "target": "file:ai/mm4-plugin-wire.js", "type": "imports", "direction": "forward", "description": "setup.js loads DOM event wiring for plugin controls.", "weight": 0.7 },
+    { "source": "file:src/components/Game.jsx", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "Game.jsx imports the Connect Four engine for win checks and move evaluation.", "weight": 0.7 },
+    { "source": "file:src/components/Game.jsx", "target": "file:src/components/Board.jsx", "type": "imports", "direction": "forward", "description": "Game.jsx renders the board presentation component.", "weight": 0.7 },
+    { "source": "file:src/components/Game.jsx", "target": "file:src/components/Modal.jsx", "type": "imports", "direction": "forward", "description": "Game.jsx uses the shared result modal.", "weight": 0.7 },
+    { "source": "file:src/components/Game.jsx", "target": "file:src/components/GameTimer.jsx", "type": "imports", "direction": "forward", "description": "Game.jsx uses the shared turn timer.", "weight": 0.7 },
+    { "source": "file:src/components/Game.jsx", "target": "file:src/components/WinBanner.jsx", "type": "imports", "direction": "forward", "description": "Game.jsx shows a temporary win banner.", "weight": 0.7 },
+    { "source": "file:src/components/Game.jsx", "target": "file:src/utils/gameHelpers.js", "type": "imports", "direction": "forward", "description": "Game.jsx uses helper functions for board operations, hints, sounds, and sharing.", "weight": 0.7 },
+    { "source": "file:src/components/ReversiGame.jsx", "target": "file:src/components/ReversiBoard.jsx", "type": "imports", "direction": "forward", "description": "ReversiGame.jsx renders the Reversi board view.", "weight": 0.7 },
+    { "source": "file:src/components/ReversiGame.jsx", "target": "file:src/components/GameTimer.jsx", "type": "imports", "direction": "forward", "description": "ReversiGame.jsx shares the countdown timer component.", "weight": 0.7 },
+    { "source": "file:src/components/ReversiGame.jsx", "target": "file:src/components/WinBanner.jsx", "type": "imports", "direction": "forward", "description": "ReversiGame.jsx uses the shared win banner.", "weight": 0.7 },
+    { "source": "file:src/components/ReversiGame.jsx", "target": "file:src/utils/gameHelpers.js", "type": "imports", "direction": "forward", "description": "ReversiGame.jsx imports shared sound helpers.", "weight": 0.7 },
+    { "source": "file:src/components/ReversiGame.jsx", "target": "file:src/utils/reversiHelpers.js", "type": "imports", "direction": "forward", "description": "ReversiGame.jsx relies on the Reversi rules helper library.", "weight": 0.7 },
+    { "source": "file:src/components/BattleshipGame.jsx", "target": "file:src/components/BattleshipBoard.jsx", "type": "imports", "direction": "forward", "description": "BattleshipGame.jsx renders the Battleship board component.", "weight": 0.7 },
+    { "source": "file:src/components/BattleshipGame.jsx", "target": "file:src/components/GameTimer.jsx", "type": "imports", "direction": "forward", "description": "BattleshipGame.jsx uses the shared countdown timer.", "weight": 0.7 },
+    { "source": "file:src/components/BattleshipGame.jsx", "target": "file:src/components/WinBanner.jsx", "type": "imports", "direction": "forward", "description": "BattleshipGame.jsx uses the shared win banner.", "weight": 0.7 },
+    { "source": "file:src/components/BattleshipGame.jsx", "target": "file:src/utils/gameHelpers.js", "type": "imports", "direction": "forward", "description": "BattleshipGame.jsx imports shared sound helpers.", "weight": 0.7 },
+    { "source": "file:src/components/BattleshipGame.jsx", "target": "file:src/utils/battleshipHelpers.js", "type": "imports", "direction": "forward", "description": "BattleshipGame.jsx relies on Battleship rules and targeting helpers.", "weight": 0.7 },
+    { "source": "file:src/components/Board.jsx", "target": "file:src/utils/gameHelpers.js", "type": "imports", "direction": "forward", "description": "Board.jsx imports shared board constants.", "weight": 0.7 },
+    { "source": "file:src/components/Board.jsx", "target": "file:src/components/HazardBadge.jsx", "type": "imports", "direction": "forward", "description": "Board.jsx shows hazard badges for risky columns.", "weight": 0.7 },
+    { "source": "file:src/components/Board.jsx", "target": "file:src/components/WinOverlay.jsx", "type": "imports", "direction": "forward", "description": "Board.jsx overlays the winning line when the game ends.", "weight": 0.7 },
+    { "source": "file:src/components/Home.jsx", "target": "file:src/utils/gameHelpers.js", "type": "imports", "direction": "forward", "description": "Home.jsx imports sound helpers for UI feedback.", "weight": 0.7 },
+    { "source": "file:src/components/WinBanner.jsx", "target": "file:src/utils/gameHelpers.js", "type": "imports", "direction": "forward", "description": "WinBanner.jsx triggers shared audio feedback.", "weight": 0.7 },
+    { "source": "file:src/utils/gameHelpers.js", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "gameHelpers.js reuses core engine board functions.", "weight": 0.7 },
+    { "source": "file:ai/coach.js", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "coach.js calls the engine for legal moves, win checks, and best move search.", "weight": 0.7 },
+    { "source": "file:ai/coach.js", "target": "file:ai/rating.js", "type": "imports", "direction": "forward", "description": "coach.js uses stored skill ratings to tune AI behavior.", "weight": 0.7 },
+    { "source": "file:ai/challenge.js", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "challenge.js clones engine board structures while building daily seeds.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin.js", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "mm4-plugin.js exposes engine helpers on the public API.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin.js", "target": "file:ai/coach.js", "type": "imports", "direction": "forward", "description": "mm4-plugin.js exposes AI move and hint helpers.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin.js", "target": "file:ai/challenge.js", "type": "imports", "direction": "forward", "description": "mm4-plugin.js exposes the daily challenge seed helper.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin.js", "target": "file:ai/rating.js", "type": "imports", "direction": "forward", "description": "mm4-plugin.js exposes current skill accessors.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin-wire.js", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "mm4-plugin-wire.js uses engine utilities while wiring plugin controls.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin-wire.js", "target": "file:ai/coach.js", "type": "imports", "direction": "forward", "description": "mm4-plugin-wire.js uses coach helpers to drive hint and AI actions.", "weight": 0.7 },
+    { "source": "file:ai/mm4-plugin-wire.js", "target": "file:ai/challenge.js", "type": "imports", "direction": "forward", "description": "mm4-plugin-wire.js imports daily challenge seed helpers.", "weight": 0.7 },
+    { "source": "file:tests/engine.test.js", "target": "file:ai/engine.js", "type": "imports", "direction": "forward", "description": "engine.test.js imports engine functions directly.", "weight": 0.7 },
+    { "source": "file:tests/reversi.test.js", "target": "file:src/utils/reversiHelpers.js", "type": "imports", "direction": "forward", "description": "reversi.test.js imports Reversi rules helpers directly.", "weight": 0.7 },
+    { "source": "file:tests/battleship.test.js", "target": "file:src/utils/battleshipHelpers.js", "type": "imports", "direction": "forward", "description": "battleship.test.js imports Battleship rule helpers directly.", "weight": 0.7 },
+    { "source": "file:ai/engine.js", "target": "func:ai/engine.js:winner", "type": "contains", "direction": "forward", "description": "engine.js defines the winner evaluator.", "weight": 1.0 },
+    { "source": "file:ai/engine.js", "target": "func:ai/engine.js:bestMoveTimeboxed", "type": "contains", "direction": "forward", "description": "engine.js defines the bounded search entry point.", "weight": 1.0 },
+    { "source": "file:ai/coach.js", "target": "func:ai/coach.js:aiMove", "type": "contains", "direction": "forward", "description": "coach.js defines the AI move selector.", "weight": 1.0 },
+    { "source": "file:ai/coach.js", "target": "func:ai/coach.js:computeHints", "type": "contains", "direction": "forward", "description": "coach.js defines the hint computation helper.", "weight": 1.0 },
+    { "source": "file:ai/rating.js", "target": "func:ai/rating.js:updateSkill", "type": "contains", "direction": "forward", "description": "rating.js defines the skill-update function.", "weight": 1.0 },
+    { "source": "file:src/components/App.jsx", "target": "func:src/components/App.jsx:App", "type": "contains", "direction": "forward", "description": "App.jsx defines the top-level App component.", "weight": 1.0 },
+    { "source": "file:src/components/Game.jsx", "target": "func:src/components/Game.jsx:Game", "type": "contains", "direction": "forward", "description": "Game.jsx defines the Connect Four controller component.", "weight": 1.0 },
+    { "source": "file:src/components/ReversiGame.jsx", "target": "func:src/components/ReversiGame.jsx:ReversiGame", "type": "contains", "direction": "forward", "description": "ReversiGame.jsx defines the Reversi controller component.", "weight": 1.0 },
+    { "source": "file:src/components/BattleshipGame.jsx", "target": "func:src/components/BattleshipGame.jsx:BattleshipGame", "type": "contains", "direction": "forward", "description": "BattleshipGame.jsx defines the Battleship controller component.", "weight": 1.0 },
+    { "source": "file:src/utils/gameHelpers.js", "target": "class:src/utils/gameHelpers.js:Beep", "type": "contains", "direction": "forward", "description": "gameHelpers.js defines the Beep audio utility class.", "weight": 1.0 },
+    { "source": "file:src/utils/gameHelpers.js", "target": "func:src/utils/gameHelpers.js:computeLocalHints", "type": "contains", "direction": "forward", "description": "gameHelpers.js defines the lightweight hint helper.", "weight": 1.0 },
+    { "source": "file:src/utils/reversiHelpers.js", "target": "func:src/utils/reversiHelpers.js:pickBestReversiMove", "type": "contains", "direction": "forward", "description": "reversiHelpers.js defines the heuristic Reversi AI move picker.", "weight": 1.0 },
+    { "source": "file:src/utils/battleshipHelpers.js", "target": "func:src/utils/battleshipHelpers.js:pickAIShot", "type": "contains", "direction": "forward", "description": "battleshipHelpers.js defines the Battleship AI targeting dispatcher.", "weight": 1.0 },
+    { "source": "func:src/components/Game.jsx:Game", "target": "func:ai/engine.js:winner", "type": "calls", "direction": "forward", "description": "Game checks the engine winner function after moves and while evaluating tactical threats.", "weight": 0.8 },
+    { "source": "func:src/components/Game.jsx:Game", "target": "func:src/utils/gameHelpers.js:computeLocalHints", "type": "calls", "direction": "forward", "description": "Game falls back to local hint generation when a global hint provider is absent.", "weight": 0.8 },
+    { "source": "func:src/components/ReversiGame.jsx:ReversiGame", "target": "func:src/utils/reversiHelpers.js:pickBestReversiMove", "type": "calls", "direction": "forward", "description": "ReversiGame delegates AI move selection to the Reversi helper library.", "weight": 0.8 },
+    { "source": "func:src/components/BattleshipGame.jsx:BattleshipGame", "target": "func:src/utils/battleshipHelpers.js:pickAIShot", "type": "calls", "direction": "forward", "description": "BattleshipGame asks the helper library for the next AI target cell.", "weight": 0.8 },
+    { "source": "func:ai/coach.js:aiMove", "target": "func:ai/engine.js:bestMoveTimeboxed", "type": "calls", "direction": "forward", "description": "aiMove uses the search engine to evaluate strong candidate moves.", "weight": 0.8 },
+    { "source": "func:ai/coach.js:computeHints", "target": "func:ai/engine.js:winner", "type": "calls", "direction": "forward", "description": "computeHints checks for immediate tactical outcomes using the winner evaluator.", "weight": 0.8 },
+    { "source": "func:ai/coach.js:aiMove", "target": "func:ai/rating.js:updateSkill", "type": "depends_on", "direction": "forward", "description": "AI strength depends on skill state that is later updated after completed games.", "weight": 0.6 },
+    { "source": "file:ai/coach.js", "target": "concept:adaptive-difficulty", "type": "depends_on", "direction": "forward", "description": "coach.js implements adaptive difficulty behavior.", "weight": 0.6 },
+    { "source": "file:ai/rating.js", "target": "concept:adaptive-difficulty", "type": "depends_on", "direction": "forward", "description": "rating.js persists the player skill model behind adaptive difficulty.", "weight": 0.6 },
+    { "source": "file:src/utils/gameHelpers.js", "target": "concept:procedural-audio", "type": "depends_on", "direction": "forward", "description": "gameHelpers.js is the implementation center for procedural sound effects.", "weight": 0.6 },
+    { "source": "class:src/utils/gameHelpers.js:Beep", "target": "concept:procedural-audio", "type": "implements", "direction": "forward", "description": "Beep embodies the procedural audio concept in code.", "weight": 0.9 },
+    { "source": "file:index.html", "target": "concept:pwa-offline", "type": "depends_on", "direction": "forward", "description": "index.html advertises the app as an installable web experience.", "weight": 0.6 },
+    { "source": "file:manifest.json", "target": "concept:pwa-offline", "type": "configures", "direction": "forward", "description": "manifest.json configures installable PWA metadata.", "weight": 0.5 },
+    { "source": "file:sw.js", "target": "concept:pwa-offline", "type": "implements", "direction": "forward", "description": "sw.js implements offline caching and shell loading behavior.", "weight": 0.9 },
+    { "source": "module:react-ui", "target": "file:src/components/App.jsx", "type": "contains", "direction": "forward", "description": "The react-ui module includes the App screen controller.", "weight": 1.0 },
+    { "source": "module:react-ui", "target": "file:src/components/Home.jsx", "type": "contains", "direction": "forward", "description": "The react-ui module includes the home screen.", "weight": 1.0 },
+    { "source": "module:react-ui", "target": "file:src/components/Game.jsx", "type": "contains", "direction": "forward", "description": "The react-ui module includes the Connect Four controller.", "weight": 1.0 },
+    { "source": "module:react-ui", "target": "file:src/components/ReversiGame.jsx", "type": "contains", "direction": "forward", "description": "The react-ui module includes the Reversi controller.", "weight": 1.0 },
+    { "source": "module:react-ui", "target": "file:src/components/BattleshipGame.jsx", "type": "contains", "direction": "forward", "description": "The react-ui module includes the Battleship controller.", "weight": 1.0 },
+    { "source": "module:ai-engine", "target": "file:ai/engine.js", "type": "contains", "direction": "forward", "description": "The ai-engine module includes the Connect Four search engine.", "weight": 1.0 },
+    { "source": "module:ai-engine", "target": "file:ai/coach.js", "type": "contains", "direction": "forward", "description": "The ai-engine module includes the coaching and hint layer.", "weight": 1.0 },
+    { "source": "module:ai-engine", "target": "file:ai/rating.js", "type": "contains", "direction": "forward", "description": "The ai-engine module includes adaptive rating utilities.", "weight": 1.0 },
+    { "source": "module:ai-engine", "target": "file:ai/challenge.js", "type": "contains", "direction": "forward", "description": "The ai-engine module includes the daily challenge generator.", "weight": 1.0 },
+    { "source": "module:ai-engine", "target": "concept:adaptive-difficulty", "type": "related", "direction": "forward", "description": "The AI module is organized around adaptive play behavior.", "weight": 0.5 },
+    { "source": "file:src/components/App.jsx", "target": "module:react-ui", "type": "depends_on", "direction": "forward", "description": "App.jsx sits inside the wider React UI module.", "weight": 0.6 },
+    { "source": "file:src/components/Game.jsx", "target": "module:ai-engine", "type": "depends_on", "direction": "forward", "description": "Connect Four gameplay depends on the AI engine module.", "weight": 0.6 },
+    { "source": "file:tests/engine.test.js", "target": "file:ai/engine.js", "type": "tested_by", "direction": "backward", "description": "The engine is covered by dedicated Jest tests.", "weight": 0.5 },
+    { "source": "file:src/utils/reversiHelpers.js", "target": "file:tests/reversi.test.js", "type": "tested_by", "direction": "forward", "description": "Reversi helper behavior is validated by the reversi test suite.", "weight": 0.5 },
+    { "source": "file:src/utils/battleshipHelpers.js", "target": "file:tests/battleship.test.js", "type": "tested_by", "direction": "forward", "description": "Battleship helpers are validated by the battleship test suite.", "weight": 0.5 },
+    { "source": "func:ai/engine.js:winner", "target": "file:tests/engine.test.js", "type": "tested_by", "direction": "forward", "description": "winner is directly exercised by engine.test.js.", "weight": 0.5 },
+    { "source": "func:ai/engine.js:bestMoveTimeboxed", "target": "file:tests/engine.test.js", "type": "tested_by", "direction": "forward", "description": "bestMoveTimeboxed is directly exercised by engine.test.js.", "weight": 0.5 },
+    { "source": "func:src/utils/reversiHelpers.js:pickBestReversiMove", "target": "file:tests/reversi.test.js", "type": "tested_by", "direction": "forward", "description": "pickBestReversiMove is validated by the Reversi test suite.", "weight": 0.5 },
+    { "source": "func:src/utils/battleshipHelpers.js:pickAIShot", "target": "file:tests/battleship.test.js", "type": "tested_by", "direction": "forward", "description": "pickAIShot is validated across difficulty levels in the Battleship tests.", "weight": 0.5 },
+    { "source": "file:src/setup.js", "target": "file:sw.js", "type": "configures", "direction": "forward", "description": "setup.js registers the service worker in production environments.", "weight": 0.5 },
+    { "source": "file:vite.config.js", "target": "file:sw.js", "type": "configures", "direction": "forward", "description": "vite.config.js governs how the app is built and served around the PWA assets.", "weight": 0.5 },
+    { "source": "file:README.md", "target": "file:package.json", "type": "related", "direction": "forward", "description": "The README references the scripts and runtime dependencies declared in package.json.", "weight": 0.5 }
+  ],
+  "layers": [
+    {
+      "id": "layer:entry-and-config",
+      "name": "Entry And Config",
+      "description": "Bootstrap, build, metadata, and offline setup files that define how the app starts and ships.",
+      "nodeIds": [
+        "file:index.html",
+        "file:package.json",
+        "file:README.md",
+        "file:manifest.json",
+        "file:vite.config.js",
+        "file:sw.js",
+        "file:src/main.jsx",
+        "file:src/setup.js",
+        "concept:pwa-offline"
+      ]
+    },
+    {
+      "id": "layer:ui-layer",
+      "name": "UI Layer",
+      "description": "React components and styling that present the home screen, game boards, overlays, and shared UI widgets.",
+      "nodeIds": [
+        "module:react-ui",
+        "file:src/styles.css",
+        "file:src/components/App.jsx",
+        "file:src/components/Home.jsx",
+        "file:src/components/Game.jsx",
+        "file:src/components/Board.jsx",
+        "file:src/components/GameTimer.jsx",
+        "file:src/components/HazardBadge.jsx",
+        "file:src/components/Modal.jsx",
+        "file:src/components/ReversiBoard.jsx",
+        "file:src/components/ReversiGame.jsx",
+        "file:src/components/BattleshipBoard.jsx",
+        "file:src/components/BattleshipGame.jsx",
+        "file:src/components/WinBanner.jsx",
+        "file:src/components/WinOverlay.jsx",
+        "func:src/components/App.jsx:App",
+        "func:src/components/Game.jsx:Game",
+        "func:src/components/ReversiGame.jsx:ReversiGame",
+        "func:src/components/BattleshipGame.jsx:BattleshipGame"
+      ]
+    },
+    {
+      "id": "layer:game-logic",
+      "name": "Game Logic",
+      "description": "Rule helpers and shared gameplay utilities for Connect Four, Reversi, Battleship, and synthesized feedback.",
+      "nodeIds": [
+        "file:src/utils/gameHelpers.js",
+        "file:src/utils/reversiHelpers.js",
+        "file:src/utils/battleshipHelpers.js",
+        "class:src/utils/gameHelpers.js:Beep",
+        "func:src/utils/gameHelpers.js:computeLocalHints",
+        "func:src/utils/reversiHelpers.js:pickBestReversiMove",
+        "func:src/utils/battleshipHelpers.js:pickAIShot",
+        "concept:procedural-audio"
+      ]
+    },
+    {
+      "id": "layer:ai-layer",
+      "name": "AI Layer",
+      "description": "Search, rating, challenge seeding, analytics, and plugin bridge code that support computer play and integrations.",
+      "nodeIds": [
+        "module:ai-engine",
+        "file:ai/adapter.js",
+        "file:ai/analytics.js",
+        "file:ai/challenge.js",
+        "file:ai/coach.js",
+        "file:ai/engine.js",
+        "file:ai/mm4-plugin-wire.js",
+        "file:ai/mm4-plugin.js",
+        "file:ai/rating.js",
+        "func:ai/engine.js:winner",
+        "func:ai/engine.js:bestMoveTimeboxed",
+        "func:ai/coach.js:aiMove",
+        "func:ai/coach.js:computeHints",
+        "func:ai/rating.js:updateSkill",
+        "concept:adaptive-difficulty"
+      ]
+    },
+    {
+      "id": "layer:quality",
+      "name": "Quality",
+      "description": "Automated tests and supporting project guidance that keep the core rule engines and AI behavior stable.",
+      "nodeIds": [
+        "file:tests/engine.test.js",
+        "file:tests/reversi.test.js",
+        "file:tests/battleship.test.js"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Start With The Web Shell",
+      "description": "Read the HTML shell, package metadata, Vite config, and React bootstrap to see how the app is loaded, built, and registered as a PWA.",
+      "nodeIds": [
+        "file:index.html",
+        "file:package.json",
+        "file:vite.config.js",
+        "file:src/main.jsx",
+        "file:src/setup.js",
+        "file:sw.js"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Understand App-Level Routing",
+      "description": "Move to the App and Home components to understand how users choose a game, a mode, and a difficulty before gameplay begins.",
+      "nodeIds": [
+        "file:src/components/App.jsx",
+        "func:src/components/App.jsx:App",
+        "file:src/components/Home.jsx"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Follow The Connect Four Path",
+      "description": "Trace the main Connect Four loop through the Game controller, board component, helper utilities, and engine functions that decide wins and best moves.",
+      "nodeIds": [
+        "file:src/components/Game.jsx",
+        "func:src/components/Game.jsx:Game",
+        "file:src/components/Board.jsx",
+        "file:src/utils/gameHelpers.js",
+        "file:ai/engine.js",
+        "func:ai/engine.js:winner",
+        "func:ai/engine.js:bestMoveTimeboxed"
+      ],
+      "languageLesson": "This path shows a common React pattern: UI components remain declarative while imperative game rules and search logic live in separate utility modules."
+    },
+    {
+      "order": 4,
+      "title": "Inspect Reversi State Transitions",
+      "description": "Open the Reversi controller and helper library to see legal move generation, disc flipping, pass logic, and heuristic AI move selection.",
+      "nodeIds": [
+        "file:src/components/ReversiGame.jsx",
+        "func:src/components/ReversiGame.jsx:ReversiGame",
+        "file:src/components/ReversiBoard.jsx",
+        "file:src/utils/reversiHelpers.js",
+        "func:src/utils/reversiHelpers.js:pickBestReversiMove"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Inspect Battleship Phase Management",
+      "description": "Read BattleshipGame and its helper library to understand setup, battle turns, shot resolution, and difficulty-based targeting.",
+      "nodeIds": [
+        "file:src/components/BattleshipGame.jsx",
+        "func:src/components/BattleshipGame.jsx:BattleshipGame",
+        "file:src/components/BattleshipBoard.jsx",
+        "file:src/utils/battleshipHelpers.js",
+        "func:src/utils/battleshipHelpers.js:pickAIShot"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Study Adaptive AI",
+      "description": "Switch to the AI layer to see how coach.js, rating.js, and the core search engine collaborate to make the computer opponent stronger or weaker over time.",
+      "nodeIds": [
+        "module:ai-engine",
+        "file:ai/coach.js",
+        "func:ai/coach.js:aiMove",
+        "func:ai/coach.js:computeHints",
+        "file:ai/rating.js",
+        "func:ai/rating.js:updateSkill",
+        "concept:adaptive-difficulty"
+      ],
+      "languageLesson": "This layer demonstrates how a policy function can wrap a search engine, injecting heuristics, stored preferences, and user-model state without modifying the engine itself."
+    },
+    {
+      "order": 7,
+      "title": "See Integration And Feedback Systems",
+      "description": "Review the plugin bridge, analytics hook, setup file, and procedural audio utility to understand how the app communicates outside React and enriches play.",
+      "nodeIds": [
+        "file:src/setup.js",
+        "file:ai/mm4-plugin.js",
+        "file:ai/mm4-plugin-wire.js",
+        "file:ai/analytics.js",
+        "class:src/utils/gameHelpers.js:Beep",
+        "concept:procedural-audio"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Finish With Validation",
+      "description": "End by reading the Jest suites that lock in winner detection, Reversi move generation, and Battleship rule correctness.",
+      "nodeIds": [
+        "file:tests/engine.test.js",
+        "file:tests/reversi.test.js",
+        "file:tests/battleship.test.js"
+      ]
+    }
+  ]
+}

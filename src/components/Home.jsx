@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { SND } from "../utils/gameHelpers.js";
 import {
   AGE_GROUPS, CATEGORIES, SKILL_ICONS,
+  getGameIdFromRoute, getGameRoute,
   filterGames,
 } from "../utils/gameCatalog.js";
 import ProgressBadge from "./ProgressBadge.jsx";
@@ -66,6 +67,17 @@ export default function Home({
   const [query, setQuery] = useState("");
 
   useEffect(() => {
+    const syncPickedFromHash = () => {
+      const match = window.location.hash.match(/^#\/games\/([^/]+)$/);
+      setPicked(match ? getGameIdFromRoute(match[1]) : null);
+    };
+
+    syncPickedFromHash();
+    window.addEventListener("hashchange", syncPickedFromHash);
+    return () => window.removeEventListener("hashchange", syncPickedFromHash);
+  }, []);
+
+  useEffect(() => {
     SND.toggle(soundOn);
     localStorage.setItem("mm4_sound_on", JSON.stringify(soundOn));
   }, [soundOn]);
@@ -91,6 +103,17 @@ export default function Home({
   const selectedModeLabel =
     selectedMode === "ai" ? "Play vs AI" :
     selectedMode === "2p" ? "Local 2P" : "Daily Puzzle";
+
+  const goHome = () => {
+    if (window.location.hash !== "#/home") window.location.hash = "#/home";
+    setPicked(null);
+  };
+
+  const goToGame = (gameId) => {
+    const nextHash = `#/games/${getGameRoute(gameId)}`;
+    if (window.location.hash !== nextHash) window.location.hash = nextHash;
+    setPicked(gameId);
+  };
 
   return (
     <div className={`home${kidsMode ? " home-kids" : ""}`}>
@@ -183,11 +206,12 @@ export default function Home({
 
             <div className="game-picker">
               {filtered.map(g => (
-                <button
+                <a
                   key={g.id}
                   className={`game-pick-card game-pick-card-${g.id}${g.kidFriendly ? " game-pick-kid" : ""}`}
+                  href={`#/games/${getGameRoute(g.id)}`}
                   onMouseEnter={() => SND.hover()}
-                  onClick={() => { SND.select(); setPicked(g.id); }}
+                  onClick={(e) => { e.preventDefault(); SND.select(); goToGame(g.id); }}
                 >
                   <span className="game-pick-icon">{g.icon}</span>
                   <span className="game-pick-name">{g.name}</span>
@@ -206,7 +230,7 @@ export default function Home({
                       );
                     })}
                   </span>
-                </button>
+                  </a>
               ))}
             </div>
           </>
@@ -214,7 +238,7 @@ export default function Home({
 
         {picked === "connect4" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Connect Four</h2>
             <p className="home-steps">Choose mode and difficulty, then press Play.</p>
             <h3 className="section-label">Mode</h3>
@@ -235,7 +259,7 @@ export default function Home({
 
         {picked === "reversi" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Reversi</h2>
             <p className="home-steps">Choose mode and difficulty, then press Play.</p>
             <h3 className="section-label">Mode</h3>
@@ -263,7 +287,7 @@ export default function Home({
 
         {picked === "battleship" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Battleship</h2>
             <p className="home-steps">Choose mode and difficulty, then press Play.</p>
             <h3 className="section-label">Mode</h3>
@@ -291,7 +315,7 @@ export default function Home({
 
         {picked === "gomoku" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Gomoku</h2>
             <p className="home-steps">Five in a row wins!</p>
             <h3 className="section-label">Mode</h3>
@@ -319,7 +343,7 @@ export default function Home({
 
         {picked === "twenty48" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">2048</h2>
             <p className="home-steps">Swipe (mobile) or arrow keys (desktop) to merge equal tiles.</p>
             <div className="home-howto">
@@ -338,7 +362,7 @@ export default function Home({
 
         {picked === "spatial" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Shape Fit</h2>
             <p className="home-steps">Rotate and place each block so the silhouette fills perfectly.</p>
             <div className="home-howto">
@@ -357,7 +381,7 @@ export default function Home({
 
         {picked === "memory" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Memory Match</h2>
             <p className="home-steps">Choose mode and difficulty, then press Play.</p>
             <h3 className="section-label">Mode</h3>
@@ -388,7 +412,7 @@ export default function Home({
 
         {picked === "simon" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Simon Says</h2>
             <p className="home-steps">Watch the colors light up — then tap them in the same order!</p>
             <div className="home-howto">
@@ -407,7 +431,7 @@ export default function Home({
 
         {picked === "math" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Math Sprint</h2>
             <p className="home-steps">Solve as many problems as you can in 60 seconds. Streaks earn bonus points!</p>
             <h3 className="section-label">Difficulty</h3>
@@ -429,7 +453,7 @@ export default function Home({
 
         {picked === "word" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Word Scramble</h2>
             <p className="home-steps">Unscramble letters before time runs out. Builds vocabulary!</p>
             <h3 className="section-label">Difficulty</h3>
@@ -453,7 +477,7 @@ export default function Home({
 
         {picked === "stroop" && (
           <>
-            <BackBtn onClick={() => setPicked(null)} />
+            <BackBtn onClick={goHome} />
             <h2 className="home-game-title">Stroop Test</h2>
             <p className="home-steps">Tap the <b>color of the ink</b> — not the word! Trains focus.</p>
             <div className="home-howto">

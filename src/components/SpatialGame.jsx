@@ -13,7 +13,6 @@ import {
 const DIFFICULTY = "Medium";
 
 export default function SpatialGame({ onBack }) {
-  const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [placements, setPlacements] = useState({});
   const [selectedPieceId, setSelectedPieceId] = useState(PUZZLES[0].pieces[0].id);
   const [rotation, setRotation] = useState(0);
@@ -21,7 +20,7 @@ export default function SpatialGame({ onBack }) {
   const [seconds, setSeconds] = useState(0);
   const [end, setEnd] = useState(false);
 
-  const puzzle = PUZZLES[puzzleIndex];
+  const puzzle = PUZZLES[0];
   const targetSet = useMemo(() => getTargetSet(puzzle), [puzzle]);
   const occupancy = useMemo(() => buildOccupancy(puzzle, placements), [puzzle, placements]);
   const selectedPiece = puzzle.pieces.find((p) => p.id === selectedPieceId) || puzzle.pieces[0];
@@ -52,7 +51,7 @@ export default function SpatialGame({ onBack }) {
     setMoves(0);
     setSeconds(0);
     setEnd(false);
-  }, [puzzleIndex]);
+  }, [puzzle]);
 
   const boardRows = Array.from({ length: puzzle.rows }, (_, y) => y);
   const boardCols = Array.from({ length: puzzle.cols }, (_, x) => x);
@@ -104,11 +103,6 @@ export default function SpatialGame({ onBack }) {
     SND.select();
   }
 
-  function changePuzzle(index) {
-    setPuzzleIndex(index);
-    SND.select();
-  }
-
   const PREVIEW_GRID_SIZE = 4;
 
   function shapePreview(piece, rotationValue = 0) {
@@ -155,18 +149,6 @@ export default function SpatialGame({ onBack }) {
 
       <div className="spatial-grid">
         <section>
-          <div className="section-label">Puzzle</div>
-          <div className="spatial-puzzles">
-            {PUZZLES.map((item, idx) => (
-              <button
-                key={item.id}
-                className={`step-btn${idx === puzzleIndex ? " active" : ""}`}
-                onClick={() => changePuzzle(idx)}
-              >
-                {item.title}
-              </button>
-            ))}
-          </div>
           <div
             className="spatial-board"
             role="grid"

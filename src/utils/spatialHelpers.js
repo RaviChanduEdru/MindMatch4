@@ -44,47 +44,6 @@ export const PUZZLES = [
       },
     ],
   },
-  {
-    id: "rocket-puzzle",
-    title: "Rocket Launch",
-    description: "Assemble the rocket from 4 shaped pieces.",
-    rows: 6,
-    cols: 6,
-    target: [
-      [2, 0], [3, 0],
-      [2, 1], [3, 1],
-      [1, 2], [2, 2], [3, 2], [4, 2],
-      [2, 3], [3, 3],
-      [2, 4], [3, 4],
-      [2, 5],
-    ],
-    pieces: [
-      {
-        id: "square",
-        name: "Square",
-        color: "#8b5cf6",
-        shape: [[0, 0], [1, 0], [0, 1], [1, 1]],
-      },
-      {
-        id: "line",
-        name: "Line",
-        color: "#22d3ee",
-        shape: [[0, 0], [1, 0], [2, 0], [3, 0]],
-      },
-      {
-        id: "corner",
-        name: "Corner",
-        color: "#fb923c",
-        shape: [[0, 0], [0, 1], [1, 0]],
-      },
-      {
-        id: "pair",
-        name: "Pair",
-        color: "#f43f5e",
-        shape: [[0, 0], [0, 1]],
-      },
-    ],
-  },
 ];
 
 const rotateCell = ([x, y], rotation) => {

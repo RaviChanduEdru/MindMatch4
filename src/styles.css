@@ -175,6 +175,7 @@
   transition:transform .22s ease, border-color .22s, box-shadow .3s;
   text-align:center;
   color:var(--ink);
+  text-decoration:none;
   position:relative;
   overflow:hidden;
 }
