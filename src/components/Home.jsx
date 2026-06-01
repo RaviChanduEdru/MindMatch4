@@ -42,6 +42,7 @@ export default function Home({
   onPlayMath,
   onPlayWord,
   onPlayStroop,
+  onPlaySpatial,
   onOpenDashboard,
   mathLevel, setMathLevel,
   wordLevel, setWordLevel,
@@ -352,6 +353,25 @@ export default function Home({
             </div>
             <button className="start-btn start-btn-twenty48" onMouseEnter={() => SND.hover()} onClick={() => { SND.select(); onPlayTwenty48(); }}>
               Play: 2048
+            </button>
+          </>
+        )}
+
+        {picked === "spatial" && (
+          <>
+            <BackBtn onClick={() => setPicked(null)} />
+            <h2 className="home-game-title">Shape Fit</h2>
+            <p className="home-steps">Rotate and place each block so the silhouette fills perfectly.</p>
+            <div className="home-howto">
+              <h3 className="section-label">Great for</h3>
+              <ul className="home-howto-list">
+                <li>🔷 Spatial reasoning</li>
+                <li>🧩 Logic and planning</li>
+                <li>🧒 Friendly for kids and families</li>
+              </ul>
+            </div>
+            <button className="start-btn start-btn-spatial" onMouseEnter={() => SND.hover()} onClick={() => { SND.select(); onPlaySpatial(); }}>
+              Play: Shape Fit
             </button>
           </>
         )}
