@@ -156,6 +156,29 @@ function countCorners(board, player) {
   ].filter((cell) => cell === player).length;
 }
 
+/**
+ * Positional evaluation of a whole board from `player`'s perspective, used by
+ * the Expert two-ply search. Combines square weights, corner control, mobility
+ * and disc differential in one consistent function (the old Expert reply used
+ * a different, cruder scoring pass than the top-level move scoring).
+ */
+function positionalEval(board, player) {
+  const counts = countDiscs(board);
+  const our = player === BLACK ? counts.black : counts.white;
+  const their = player === BLACK ? counts.white : counts.black;
+  let s = (our - their) * 0.5;
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (board[r][c] === player) s += POSITION_WEIGHTS[r][c];
+      else if (board[r][c] === -player) s -= POSITION_WEIGHTS[r][c];
+    }
+  }
+  s += countCorners(board, player) * 45;
+  s -= countCorners(board, -player) * 35;
+  s += (getValidMoves(board, player).length - getValidMoves(board, -player).length) * 4;
+  return s;
+}
+
 export function moveLabel(row, col) {
   return `${String.fromCharCode(65 + col)}${row + 1}`;
 }
@@ -204,19 +227,21 @@ export function pickBestReversiMove(board, player, difficulty = "Hard") {
     if (touchesOpenCorner(board, move.row, move.col)) score -= 32;
     if (givesCorner) score -= 40;
 
-    // Expert: also evaluate opponent's best reply
-    if (difficulty === "Expert" && nextMoves.length) {
-      let worstReply = Infinity;
-      nextMoves.forEach((opp) => {
-        const oppBoard = applyReversiMove(nextBoard, opp, -player);
-        const afterMoves = getValidMoves(oppBoard, player);
-        let replyScore = POSITION_WEIGHTS[opp.row][opp.col];
-        replyScore += opp.flips.length * 2;
-        replyScore -= afterMoves.length * 3;
-        if (isCorner(opp.row, opp.col)) replyScore += 50;
-        worstReply = Math.min(worstReply, -replyScore);
-      });
-      score += worstReply * 0.6;
+    // Expert: genuine two-ply search — assume the opponent replies with the
+    // move that minimises our positional evaluation, and blend that in.
+    if (difficulty === "Expert") {
+      let worst;
+      if (nextMoves.length) {
+        worst = Infinity;
+        nextMoves.forEach((opp) => {
+          const oppBoard = applyReversiMove(nextBoard, opp, -player);
+          worst = Math.min(worst, positionalEval(oppBoard, player));
+        });
+      } else {
+        // Opponent must pass — evaluate our resulting position directly.
+        worst = positionalEval(nextBoard, player);
+      }
+      score = score * 0.35 + worst * 0.65;
     }
 
     // Medium: ignore mobility/corner-risk penalties (simpler evaluation)
