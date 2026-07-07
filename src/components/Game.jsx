@@ -20,7 +20,6 @@ import {
   shareText,
   computeLocalHints,
   reasonFor,
-  mctsPick,
   SND,
 } from "../utils/gameHelpers.js";
 
@@ -249,28 +248,33 @@ export default function Game({ mode, seedDaily, difficulty = "Auto", onBack, p1N
         diff = Math.min(5, Math.max(1, Math.floor((stats.wins - stats.losses) / 3) + 2));
       }
       let chosen, note;
-      if (diff <= 2) {
+      if (diff <= 1) {
+        // Easy: play randomly among the heuristically-preferred columns, so
+        // it stays fallible and beatable for young/new players.
         const h = computeLocalHints(board, -1);
         const candidates = h.best?.length
           ? h.best.slice()
-          : [3, 2, 4, 1, 5, 0, 6].filter((c) => canPlay(board, c));
-        if (uiLevel === "Easy") {
-          chosen =
-            candidates[Math.floor(Math.random() * Math.max(1, candidates.length))] ??
-            3;
-          note = "Simple heuristic (Easy)";
-        } else {
-          chosen =
-            candidates && candidates[0] != null
-              ? candidates[0]
-              : [3, 2, 4, 1, 5, 0, 6].find((c) => canPlay(board, c));
-          note = "Heuristic (Medium)";
-        }
+          : Engine.ORDER.filter((c) => canPlay(board, c));
+        chosen =
+          candidates[Math.floor(Math.random() * Math.max(1, candidates.length))] ??
+          3;
+        note = "Simple heuristic (Easy)";
       } else {
-        const iters = uiLevel === "Expert" ? 1000 : 600;
-        const m = mctsPick(board, -1, iters);
-        chosen = m.col;
-        note = `Monte‑Carlo rollout (${iters})`;
+        // Medium → Expert: use the negamax solver (alpha-beta + iterative
+        // deepening + transposition table). Search depth/time scale with the
+        // level, so Medium plays soundly but shallowly while Expert is near
+        // perfect. This replaces the old flat Monte-Carlo rollouts, which
+        // only saw one-move tactics and blundered on forced sequences.
+        const cfg =
+          diff >= 5 ? { t: 700, d: 12, label: "Expert" } :
+          diff >= 4 ? { t: 350, d: 9, label: "Hard" } :
+                      { t: 120, d: 5, label: "Medium" };
+        const res = Engine.bestMoveTimeboxed(board, -1, cfg.t, cfg.d);
+        chosen =
+          typeof res.best === "number"
+            ? res.best
+            : Engine.ORDER.find((c) => canPlay(board, c));
+        note = `Lookahead — ${cfg.label} (depth ${cfg.d})`;
       }
       setAiExplain(note || "");
       if (typeof chosen === "number") place(chosen, -1);

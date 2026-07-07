@@ -26,6 +26,9 @@ export default function SimonGame({ onBack, kidsMode = false }) {
   const [streakBurst, setStreakBurst] = useState(false);
 
   const timeoutsRef = useRef([]);
+  // Ensures a finished game is recorded exactly once (the persist effect also
+  // depends on `best`, which changes when a new high score is saved).
+  const recordedRef = useRef(false);
   const clearTimers = () => {
     timeoutsRef.current.forEach(t => clearTimeout(t));
     timeoutsRef.current = [];
@@ -33,16 +36,16 @@ export default function SimonGame({ onBack, kidsMode = false }) {
 
   useEffect(() => () => clearTimers(), []);
 
-  // Persist best
+  // Persist best + record the game exactly once when it ends.
   useEffect(() => {
+    if (phase !== PHASE_OVER || recordedRef.current) return;
+    recordedRef.current = true;
     const score = seq.length - 1;
-    if (phase === PHASE_OVER && score > best) {
+    if (score > best) {
       setBest(score);
       saveBest(score);
     }
-    if (phase === PHASE_OVER) {
-      recordGame("simon", { score, won: score >= 3, durationSec: score * 2 });
-    }
+    recordGame("simon", { score, won: score >= 3, durationSec: score * 2 });
   }, [phase, seq.length, best]);
 
   /** Show the sequence to the player. */
@@ -74,6 +77,8 @@ export default function SimonGame({ onBack, kidsMode = false }) {
 
   function startGame() {
     SND.select();
+    clearTimers();
+    recordedRef.current = false;
     const fresh = makeSequence(1);
     setSeq(fresh);
     setStep(0);
@@ -99,10 +104,13 @@ export default function SimonGame({ onBack, kidsMode = false }) {
 
     const nextStepIdx = step + 1;
     if (nextStepIdx >= seq.length) {
-      // Round complete — extend sequence
+      // Round complete — extend sequence. Lock input immediately (PHASE_SHOW)
+      // so a stray tap during the 700ms gap isn't validated against the old
+      // sequence.
       setStreakBurst(true);
       setTimeout(() => setStreakBurst(false), 600);
       SND.click();
+      setPhase(PHASE_SHOW);
       setStep(0);
       const grown = nextStep(seq);
       setTimeout(() => {
@@ -116,6 +124,7 @@ export default function SimonGame({ onBack, kidsMode = false }) {
 
   function reset() {
     clearTimers();
+    recordedRef.current = false;
     setSeq([]);
     setStep(0);
     setHighlight(-1);

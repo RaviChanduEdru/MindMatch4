@@ -21,6 +21,9 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
   const [best, setBest] = useState(() => loadBest(level));
   const [feedback, setFeedback] = useState(null); // { ok, text }
   const lastAnswerAtRef = useRef(null);
+  // Locks input between answering and the next problem loading, so a rapid
+  // double-tap (or key-mash) can't score the same problem more than once.
+  const answeredRef = useRef(false);
 
   /** Timer */
   useEffect(() => {
@@ -55,11 +58,13 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
     setStreak(0);
     setFeedback(null);
     setPhase(PHASE_PLAY);
+    answeredRef.current = false;
     lastAnswerAtRef.current = Date.now();
   }
 
   const handleAnswer = useCallback((value) => {
-    if (phase !== PHASE_PLAY) return;
+    if (phase !== PHASE_PLAY || answeredRef.current) return;
+    answeredRef.current = true;
     const correct = value === problem.answer;
     if (correct) {
       SND.click();
@@ -78,6 +83,7 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
       setProblem(p);
       setChoices(makeChoices(p.answer, level));
       setFeedback(null);
+      answeredRef.current = false;
     }, correct ? 250 : 800);
   }, [phase, problem, streak, level]);
 

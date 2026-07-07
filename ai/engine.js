@@ -75,8 +75,18 @@ function negamax(board, player, depth, alpha, beta, endTime){
   if (depth===0 || performance.now()>endTime) return {val: evaluate(board, player), best:null};
 
   const ttKey=keyOf(board, player);
+  const alphaOrig = alpha;
   const tt = TT.get(ttKey);
-  if (tt && tt.depth>=depth) return {val: tt.val, best: tt.best};
+  if (tt && tt.depth>=depth){
+    // Reuse a stored entry only when it is sound for the current window.
+    // EXACT is always usable; LOWER/UPPER only tighten the search window and
+    // allow a cutoff when the window collapses. Treating pruned bounds as
+    // exact (the previous behaviour) could return an inflated/deflated value.
+    if (tt.flag==="EXACT") return {val: tt.val, best: tt.best};
+    if (tt.flag==="LOWER") alpha = Math.max(alpha, tt.val);
+    else if (tt.flag==="UPPER") beta = Math.min(beta, tt.val);
+    if (alpha>=beta) return {val: tt.val, best: tt.best};
+  }
 
   let bestMove = null, bestVal = -Infinity;
   for (const c of ORDER.filter(x=>board[x].length<ROWS)){
@@ -88,7 +98,8 @@ function negamax(board, player, depth, alpha, beta, endTime){
     if (alpha>=beta) break;
   }
 
-  TT.set(ttKey, {depth, val:bestVal, best:bestMove});
+  const flag = bestVal<=alphaOrig ? "UPPER" : bestVal>=beta ? "LOWER" : "EXACT";
+  TT.set(ttKey, {depth, val:bestVal, best:bestMove, flag});
   return {val: bestVal, best: bestMove};
 }
 

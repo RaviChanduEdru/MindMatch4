@@ -71,7 +71,7 @@ export default function Board({
                   >
                     {v !== 0 && (
                       <span 
-                        className={`disc ${fill} ${winLine?.some((pos) => pos.c === c && pos.r === r) ? 'disc-win' : 'disc-new'}`} 
+                        className={`disc ${fill} ${winLine?.some((pos) => pos.c === c && pos.r === rr) ? 'disc-win' : 'disc-new'}`}
                       />
                     )}
                   </div>

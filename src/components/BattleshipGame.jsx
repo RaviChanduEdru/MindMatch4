@@ -598,9 +598,9 @@ export default function BattleshipGame({
       {end && !bannerFinished && (
         <WinBanner 
           outcome={
-            mode === "ai" ? (end === "p1" ? "player_win" : "ai_win") : 
-                            (end === "p1" ? "p1_win" : "p2_win")
-          } 
+            mode === "ai" ? (end === "player_win" ? "player_win" : "ai_win") :
+                            (end === "p1_win" ? "p1_win" : "p2_win")
+          }
           onFinished={() => setBannerFinished(true)} 
         />
       )}

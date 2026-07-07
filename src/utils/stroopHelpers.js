@@ -16,17 +16,24 @@ export const loadBest = () => Number(localStorage.getItem(BEST_KEY) || 0);
 export const saveBest = (s) => localStorage.setItem(BEST_KEY, String(s));
 
 export function nextTrial(prev) {
+  // Decide the trial type up front so the classic ~65% conflict / 35%
+  // congruent ratio actually holds. (Previously word and ink were both
+  // random, which is congruent only ~25% of the time, so nearly every trial
+  // ended up as conflict.)
   let word, ink, attempts = 0;
   do {
     word = COLORS[Math.floor(Math.random() * COLORS.length)];
-    ink  = COLORS[Math.floor(Math.random() * COLORS.length)];
+    if (Math.random() < 0.35) {
+      // Congruent: ink matches the word.
+      ink = word;
+    } else {
+      // Conflict: pick a random ink among the other colors (unbiased).
+      const others = COLORS.filter((c) => c.id !== word.id);
+      ink = others[Math.floor(Math.random() * others.length)];
+    }
     attempts++;
   } while (
-    prev && (word.id === prev.word.id && ink.id === prev.ink.id) && attempts < 5
+    prev && word.id === prev.word.id && ink.id === prev.ink.id && attempts < 5
   );
-  // Bias 65% conflict trials, 35% congruent — classic Stroop ratio
-  if (Math.random() < 0.65 && word.id === ink.id) {
-    ink = COLORS.find(c => c.id !== word.id);
-  }
   return { word, ink, answer: ink.id };
 }
