@@ -43,10 +43,12 @@ export default function Home({
   onPlayMath,
   onPlayWord,
   onPlayStroop,
+  onPlayLights,
   onPlaySpatial,
   onOpenDashboard,
   mathLevel, setMathLevel,
   wordLevel, setWordLevel,
+  lightsLevel, setLightsLevel,
   kidsMode, setKidsMode,
   p1Name, setP1Name,
   p2Name, setP2Name,
@@ -139,7 +141,7 @@ export default function Home({
                     : "Chrome-first next-gen visuals with zero changes to your game progress."}
                 </p>
                 <div className="home-hero-kpis" aria-hidden="true">
-                  <span className="home-hero-kpi">10 Games</span>
+                  <span className="home-hero-kpi">12 Games</span>
                   <span className="home-hero-kpi">Offline Ready</span>
                   <span className="home-hero-kpi">Adaptive Difficulty</span>
                 </div>
@@ -511,6 +513,31 @@ export default function Home({
             </div>
             <button className="start-btn start-btn-stroop" onMouseEnter={() => SND.hover()} onClick={() => { SND.select(); onPlayStroop(); }}>
               ▶ Start Stroop
+            </button>
+          </>
+        )}
+
+        {picked === "lights" && (
+          <>
+            <BackBtn onClick={goHome} />
+            <h2 className="home-game-title">Lights Out</h2>
+            <p className="home-steps">Tap a light to flip it and its neighbours. Switch every light off to win!</p>
+            <h3 className="section-label">Grid Size</h3>
+            <div className="level-grid compact">
+              {["Easy","Medium","Hard","Expert"].map((l) => (
+                <button key={l} className={`level-btn ${lightsLevel === l ? "active" : ""}`} onClick={() => setLightsLevel(l)}>
+                  <span className="level-name">{l}</span>
+                </button>
+              ))}
+            </div>
+            <p className="level-desc selected">
+              {lightsLevel === "Easy" && "3×3 · gentle warm-up"}
+              {lightsLevel === "Medium" && "4×4 · balanced"}
+              {lightsLevel === "Hard" && "5×5 · the classic"}
+              {lightsLevel === "Expert" && "6×6 · brain-burner"}
+            </p>
+            <button className="start-btn start-btn-lights" onMouseEnter={() => SND.hover()} onClick={() => { SND.select(); onPlayLights(); }}>
+              ▶ Play: Lights Out
             </button>
           </>
         )}

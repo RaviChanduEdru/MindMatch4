@@ -10,6 +10,7 @@ import SimonGame from "./SimonGame.jsx";
 import MathGame from "./MathGame.jsx";
 import WordGame from "./WordGame.jsx";
 import StroopGame from "./StroopGame.jsx";
+import LightsGame from "./LightsGame.jsx";
 import SpatialGame from "./SpatialGame.jsx";
 import ToastHost from "./ToastHost.jsx";
 import ParentDashboard from "./ParentDashboard.jsx";
@@ -45,6 +46,9 @@ export default function App() {
   );
   const [wordLevel, setWordLevel] = useState(
     () => localStorage.getItem("mm4_word_level") || "Medium"
+  );
+  const [lightsLevel, setLightsLevel] = useState(
+    () => localStorage.getItem("mm4_lights_level") || "Medium"
   );
   const [showDashboard, setShowDashboard] = useState(false);
   const [difficulty, setDifficulty] = useState(
@@ -149,9 +153,16 @@ export default function App() {
     setScreen("game");
   };
 
+  const startLights = () => {
+    setGameId("lights");
+    setSeedDaily(false);
+    setReversiDemo(false);
+    setScreen("game");
+  };
+
   return (
     <div 
-      className={`app ${gameId === "reversi" || gameId === "battleship" || gameId === "gomoku" || gameId === "twenty48" || gameId === "memory" || gameId === "simon" || gameId === "math" || gameId === "word" || gameId === "stroop" || gameId === "spatial" ? "app-wide" : ""}`}
+      className={`app ${gameId === "reversi" || gameId === "battleship" || gameId === "gomoku" || gameId === "twenty48" || gameId === "memory" || gameId === "simon" || gameId === "math" || gameId === "word" || gameId === "stroop" || gameId === "lights" || gameId === "spatial" ? "app-wide" : ""}`}
       data-game={screen === "home" ? "home" : gameId}
     >
       <div className="crt-scanlines" />
@@ -195,6 +206,7 @@ export default function App() {
           onPlayMath={() => startMath()}
           onPlayWord={() => startWord()}
           onPlayStroop={() => startStroop()}
+          onPlayLights={() => startLights()}
           onPlaySpatial={() => startSpatial()}
           onOpenDashboard={() => setShowDashboard(true)}
           mathLevel={mathLevel}
@@ -206,6 +218,11 @@ export default function App() {
           setWordLevel={(d) => {
             setWordLevel(d);
             localStorage.setItem("mm4_word_level", d);
+          }}
+          lightsLevel={lightsLevel}
+          setLightsLevel={(d) => {
+            setLightsLevel(d);
+            localStorage.setItem("mm4_lights_level", d);
           }}
           kidsMode={kidsMode}
           setKidsMode={(v) => {
@@ -279,6 +296,9 @@ export default function App() {
       )}
       {screen === "game" && gameId === "stroop" && (
         <StroopGame onBack={() => setScreen("home")} kidsMode={kidsMode} />
+      )}
+      {screen === "game" && gameId === "lights" && (
+        <LightsGame level={lightsLevel} onBack={() => setScreen("home")} kidsMode={kidsMode} />
       )}
       {screen === "game" && gameId === "spatial" && (
         <SpatialGame onBack={() => setScreen("home")} />

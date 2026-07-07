@@ -192,6 +192,7 @@ export const ACHIEVEMENTS = [
   { id: "memory_perfect",emoji: "🧠", name: "Total Recall",      desc: "Win Memory Match",                 test: p => (p.perGame.memory?.wins ?? 0) >= 1 },
   { id: "stroop_30",     emoji: "🌈", name: "Color Boss",        desc: "Score 30+ in Stroop",              test: p => (p.perGame.stroop?.bestScore ?? 0) >= 30 },
   { id: "word_20",       emoji: "📖", name: "Word Smith",        desc: "Score 20+ in Word Scramble",       test: p => (p.perGame.word?.bestScore ?? 0) >= 20 },
+  { id: "lights_win",    emoji: "💡", name: "Bright Spark",      desc: "Clear a Lights Out board",         test: p => (p.perGame.lights?.wins ?? 0) >= 1 },
 ];
 
 function checkAchievements(p) {
