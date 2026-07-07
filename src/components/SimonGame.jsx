@@ -122,6 +122,21 @@ export default function SimonGame({ onBack, kidsMode = false }) {
     }
   }
 
+  // Keyboard: number keys 1-4 map to the four pads during input.
+  useEffect(() => {
+    if (phase !== PHASE_INPUT) return;
+    const handler = (e) => {
+      const idx = parseInt(e.key, 10);
+      if (idx >= 1 && idx <= PADS.length) {
+        e.preventDefault();
+        handlePadTap(PADS[idx - 1].id);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+    // handlePadTap closes over seq/step/phase, covered by the deps below.
+  }, [phase, seq, step]);
+
   function reset() {
     clearTimers();
     recordedRef.current = false;

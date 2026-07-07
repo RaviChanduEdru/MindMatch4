@@ -167,9 +167,13 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
             {problem.text} <span className="math-eq">=</span> <span className="math-q">?</span>
           </div>
 
-          {feedback && (
-            <div className={`math-feedback${feedback.ok ? " math-feedback-ok" : " math-feedback-bad"}`}>
-              {feedback.text}
+          {(
+            <div
+              className={`math-feedback${feedback ? (feedback.ok ? " math-feedback-ok" : " math-feedback-bad") : ""}`}
+              role="status"
+              aria-live="polite"
+            >
+              {feedback?.text || " "}
             </div>
           )}
 

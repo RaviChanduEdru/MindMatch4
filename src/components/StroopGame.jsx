@@ -87,7 +87,11 @@ export default function StroopGame({ onBack, kidsMode = false }) {
             <div className="stroop-word" style={{ color: trial.ink.hex }}>
               {trial.word.label.toUpperCase()}
             </div>
-            <div className={`math-feedback ${feedback?.ok ? "math-feedback-ok" : feedback ? "math-feedback-bad" : ""}`}>
+            <div
+              className={`math-feedback ${feedback?.ok ? "math-feedback-ok" : feedback ? "math-feedback-bad" : ""}`}
+              role="status"
+              aria-live="polite"
+            >
               {feedback?.text || " "}
             </div>
             <div className="stroop-choices">

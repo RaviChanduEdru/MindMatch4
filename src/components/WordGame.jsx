@@ -101,6 +101,24 @@ export default function WordGame({ level = "Medium", onBack, kidsMode = false })
     newRound();
   };
 
+  // Keyboard entry: type a letter to place the first matching unused tile,
+  // Backspace to undo, Escape to clear.
+  useEffect(() => {
+    if (phase !== PLAY) return;
+    const handler = (e) => {
+      if (e.key === "Backspace") { e.preventDefault(); undo(); return; }
+      if (e.key === "Escape") { clear(); return; }
+      if (e.key.length !== 1) return;
+      const ch = e.key.toUpperCase();
+      if (ch < "A" || ch > "Z") return;
+      const idx = letters.findIndex((l) => !l.used && l.ch.toUpperCase() === ch);
+      if (idx >= 0) { e.preventDefault(); pickLetter(idx); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+    // pickLetter/undo/clear close over `letters`/`picked`; rebind on change.
+  }, [phase, letters, picked]);
+
   return (
     <div className="math-page word-page">
       <div className="math-topbar">
@@ -128,7 +146,11 @@ export default function WordGame({ level = "Medium", onBack, kidsMode = false })
                 </span>
               ))}
             </div>
-            <div className={`math-feedback ${feedback?.ok ? "math-feedback-ok" : feedback ? "math-feedback-bad" : ""}`}>
+            <div
+              className={`math-feedback ${feedback?.ok ? "math-feedback-ok" : feedback ? "math-feedback-bad" : ""}`}
+              role="status"
+              aria-live="polite"
+            >
               {feedback?.text || " "}
             </div>
             <div className="word-tray">
@@ -171,7 +193,7 @@ export default function WordGame({ level = "Medium", onBack, kidsMode = false })
         </div>
       )}
 
-      <p className="math-tip">Tip: long words score bigger, and streaks add bonus points.</p>
+      <p className="math-tip">Tip: type on your keyboard (Backspace to undo), or tap the tiles. Long words and streaks score bigger.</p>
     </div>
   );
 }
