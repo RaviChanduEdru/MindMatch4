@@ -15,6 +15,7 @@ export default function WordGame({ level = "Medium", onBack, kidsMode = false })
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [best, setBest] = useState(() => loadBest(level));
+  const [newBest, setNewBest] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const recentRef = useRef([]);
 
@@ -36,12 +37,13 @@ export default function WordGame({ level = "Medium", onBack, kidsMode = false })
 
   useEffect(() => {
     if (phase !== OVER) return;
-    if (!best || score > best) { saveBest(level, score); setBest(score); }
+    if (score > (best || 0)) { saveBest(level, score); setBest(score); setNewBest(true); }
     recordGame("word", { score, won: score > 0, durationSec: cfg.time, difficulty: level });
   }, [phase]); // eslint-disable-line
 
   const start = () => {
     setScore(0); setStreak(0); setTime(cfg.time); setFeedback(null);
+    setNewBest(false);
     recentRef.current = [];
     setPhase(PLAY);
     newRound();
@@ -186,7 +188,7 @@ export default function WordGame({ level = "Medium", onBack, kidsMode = false })
 
       {phase === OVER && (
         <div className="math-ready">
-          <div className="math-ready-emoji">{score > (best || 0) - 1 ? "🏆" : "⏰"}</div>
+          <div className="math-ready-emoji">{newBest ? "🏆" : "⏰"}</div>
           <h3 className="math-ready-title">Time! Score: {score}</h3>
           <p className="math-ready-sub">Best: {best || score}</p>
           <button className="math-start-btn" onClick={start}>↻ Play Again</button>

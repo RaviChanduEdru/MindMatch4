@@ -12,6 +12,7 @@ export default function StroopGame({ onBack, kidsMode = false }) {
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [best, setBest] = useState(() => loadBest());
+  const [newBest, setNewBest] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
@@ -23,12 +24,13 @@ export default function StroopGame({ onBack, kidsMode = false }) {
 
   useEffect(() => {
     if (phase !== OVER) return;
-    if (score > best) { saveBest(score); setBest(score); }
+    if (score > best) { saveBest(score); setBest(score); setNewBest(true); }
     recordGame("stroop", { score, won: score > 0, durationSec: TIME_SEC });
   }, [phase]); // eslint-disable-line
 
   const start = () => {
     setScore(0); setStreak(0); setTime(TIME_SEC); setFeedback(null);
+    setNewBest(false);
     setTrial(nextTrial());
     setPhase(PLAY);
     SND.click();
@@ -124,7 +126,7 @@ export default function StroopGame({ onBack, kidsMode = false }) {
 
       {phase === OVER && (
         <div className="math-ready">
-          <div className="math-ready-emoji">{score >= best ? "🏆" : "⏰"}</div>
+          <div className="math-ready-emoji">{newBest ? "🏆" : "⏰"}</div>
           <h3 className="math-ready-title">Time! Score: {score}</h3>
           <p className="math-ready-sub">Best: {best || score}</p>
           <button className="math-start-btn" onClick={start}>↻ Play Again</button>

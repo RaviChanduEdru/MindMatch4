@@ -23,6 +23,7 @@ export default function SimonGame({ onBack, kidsMode = false }) {
   const [phase, setPhase] = useState(PHASE_IDLE);
   const [highlight, setHighlight] = useState(-1);
   const [best, setBest] = useState(loadBest);
+  const [newBest, setNewBest] = useState(false);
   const [streakBurst, setStreakBurst] = useState(false);
 
   const timeoutsRef = useRef([]);
@@ -44,6 +45,7 @@ export default function SimonGame({ onBack, kidsMode = false }) {
     if (score > best) {
       setBest(score);
       saveBest(score);
+      setNewBest(true);
     }
     recordGame("simon", { score, won: score >= 3, durationSec: score * 2 });
   }, [phase, seq.length, best]);
@@ -79,6 +81,7 @@ export default function SimonGame({ onBack, kidsMode = false }) {
     SND.select();
     clearTimers();
     recordedRef.current = false;
+    setNewBest(false);
     const fresh = makeSequence(1);
     setSeq(fresh);
     setStep(0);
@@ -140,6 +143,7 @@ export default function SimonGame({ onBack, kidsMode = false }) {
   function reset() {
     clearTimers();
     recordedRef.current = false;
+    setNewBest(false);
     setSeq([]);
     setStep(0);
     setHighlight(-1);
@@ -233,13 +237,13 @@ export default function SimonGame({ onBack, kidsMode = false }) {
       {/* ── End modal ── */}
       {phase === PHASE_OVER && (
         <div className="modal" role="dialog" aria-modal="true">
-          <div className={`dialog ${score >= best && score > 0 ? "dialog-win" : ""}`}>
-            <div className="dialog-emoji">{score >= best && score > 0 ? "🏆" : "🧠"}</div>
+          <div className={`dialog ${newBest ? "dialog-win" : ""}`}>
+            <div className="dialog-emoji">{newBest ? "🏆" : "🧠"}</div>
             <h2 className="dialog-title">
               {score === 0 ? "Try again!" : `${score} step${score === 1 ? "" : "s"}!`}
             </h2>
             <p className="dialog-talk">
-              {score >= best && score > 0
+              {newBest
                 ? "New personal best! 🎉"
                 : `Best so far: ${best} step${best === 1 ? "" : "s"}.`}
             </p>

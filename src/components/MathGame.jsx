@@ -19,11 +19,15 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [best, setBest] = useState(() => loadBest(level));
+  const [newBest, setNewBest] = useState(false);
   const [feedback, setFeedback] = useState(null); // { ok, text }
   const lastAnswerAtRef = useRef(null);
   // Locks input between answering and the next problem loading, so a rapid
   // double-tap (or key-mash) can't score the same problem more than once.
   const answeredRef = useRef(false);
+  // Ensures the finished game is recorded exactly once (the effect below also
+  // depends on `best`, which changes when a new high score is saved).
+  const recordedRef = useRef(false);
 
   /** Timer */
   useEffect(() => {
@@ -37,13 +41,14 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
     return () => clearTimeout(id);
   }, [phase, time]);
 
-  /** Persist best at end */
+  /** Persist best + record the game exactly once when it ends. */
   useEffect(() => {
-    if (phase !== PHASE_OVER) return;
-    const record = { score, streak };
+    if (phase !== PHASE_OVER || recordedRef.current) return;
+    recordedRef.current = true;
     if (!best || score > best.score) {
-      setBest(record);
-      saveBest(level, record);
+      setBest({ score, streak });
+      saveBest(level, { score, streak });
+      setNewBest(true);
     }
     recordGame("math", { score, won: score > 0, durationSec: cfg.time, difficulty: level });
   }, [phase, score, streak, best, level]);
@@ -59,6 +64,8 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
     setFeedback(null);
     setPhase(PHASE_PLAY);
     answeredRef.current = false;
+    recordedRef.current = false;
+    setNewBest(false);
     lastAnswerAtRef.current = Date.now();
   }
 
@@ -196,7 +203,7 @@ export default function MathGame({ level = "Medium", onBack, kidsMode = false })
 
       {phase === PHASE_OVER && (
         <div className="modal" role="dialog" aria-modal="true">
-          <div className={`dialog ${best && score === best.score && score > 0 ? "dialog-win" : ""}`}>
+          <div className={`dialog ${newBest ? "dialog-win" : ""}`}>
             <div className="dialog-emoji">{score >= 20 ? "🏆" : score >= 10 ? "🎉" : "🧮"}</div>
             <h2 className="dialog-title">Time's Up!</h2>
             <p className="dialog-talk">
