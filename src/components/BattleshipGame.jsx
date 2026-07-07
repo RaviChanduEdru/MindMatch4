@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SND } from "../utils/gameHelpers.js";
 import { recordGame } from "../utils/progress.js";
 import BattleshipBoard from "./BattleshipBoard.jsx";
@@ -54,6 +54,8 @@ export default function BattleshipGame({
 
   /* ── Battle state ── */
   const [turn, setTurn] = useState(1); // 1 = P1/human, 2 = P2/AI
+  // Guards against firing twice before the turn state flips (rapid clicks).
+  const shotLockRef = useRef(false);
   const [lastShot, setLastShot] = useState(null);
   const [lastShotBy, setLastShotBy] = useState(null);
   const [coachNote, setCoachNote] = useState(
@@ -191,7 +193,7 @@ export default function BattleshipGame({
   /* ── Battle: human fires ── */
   const handlePlayerShot = useCallback(
     (cell) => {
-      if (phase !== "battle" || end) return;
+      if (phase !== "battle" || end || shotLockRef.current) return;
 
       const isP1Turn = turn === 1;
       const attackGrid = isP1Turn ? p1Attack : p2Attack;
@@ -200,6 +202,9 @@ export default function BattleshipGame({
 
       const result = shoot(attackGrid, defGrid, defReg, cell.row, cell.col);
       if (!result) return;
+      // Lock until the turn actually flips (cleared by the effect below), so a
+      // second rapid click can't resolve against the pre-flip state.
+      shotLockRef.current = true;
 
       const label = cellLabel(cell.row, cell.col);
       setLastShot({ row: cell.row, col: cell.col });
@@ -247,6 +252,11 @@ export default function BattleshipGame({
     },
     [phase, end, turn, p1Attack, p2Attack, p1Grid, p2Grid, p1Registry, p2Registry, is2P]
   );
+
+  // Release the per-shot lock whenever the turn (or phase) changes.
+  useEffect(() => {
+    shotLockRef.current = false;
+  }, [turn, phase]);
 
   /* ── AI turn ── */
   useEffect(() => {

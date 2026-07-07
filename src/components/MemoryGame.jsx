@@ -40,13 +40,15 @@ export default function MemoryGame({
     return () => clearTimeout(id);
   }, [deck]);
 
-  // Solo timer (counts up)
+  // Solo timer (counts up). Keyed on a `started` boolean rather than `moves`
+  // so the interval runs continuously — depending on `moves` tore it down and
+  // recreated it every move, discarding the in-progress partial second.
+  const timerStarted = !is2P && !end && !previewing && moves > 0;
   useEffect(() => {
-    if (is2P || end || previewing) return;
-    if (moves === 0) return; // start counting once first flip happens
-    const id = setInterval(() => setSeconds(s => s + 1), 1000);
+    if (!timerStarted) return;
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => clearInterval(id);
-  }, [is2P, end, previewing, moves]);
+  }, [timerStarted]);
 
   // End detection
   useEffect(() => {
