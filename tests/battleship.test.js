@@ -5,7 +5,6 @@ import {
   placeShip,
   randomPlacement,
   shoot,
-  allShipsSunk,
   SHIPS,
   WATER,
   SHIP,

@@ -315,7 +315,7 @@ export function computeLocalHints(board, player = 1) {
 }
 
 /* ---------- Lightweight MCTS ---------- */
-export function randomHeuristicMove(b, p) {
+export function randomHeuristicMove(b, _p) {
   const cand = [];
   for (let c = 0; c < COLS; c++) if (canPlay(b, c)) cand.push(c);
   if (!cand.length) return -1;

@@ -9,7 +9,6 @@ export function aiMove(board, player=-1){
 
   if (Math.random() < blunderProb){
     // pick among top-2/3 using shallow look
-    const end = performance.now()+12;
     const scores = legalMoves(board).map(c=>{
       const child = play(board,c,player);
       const val = -bestMoveTimeboxed(child, -player, 18, 4).val; // small probe
@@ -37,7 +36,6 @@ export function computeHints(board, player){
     if (winner(play(board, c, -player))===-player)
       return {type:"block_now", best:[c], note:"Block opponent’s win."};
   }
-  const end = performance.now()+18;
   const scored = moves.map(c=>{
     const v = -bestMoveTimeboxed(play(board,c,player), -player, 24, 6).val;
     return {col:c, score:v};

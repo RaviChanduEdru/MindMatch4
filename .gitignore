@@ -1,1 +1,8 @@
 node_modules/
+.claude/
+coverage/
+*.log
+.DS_Store
+.understand-anything/
+pr-review-36/
+pr-review-*/
