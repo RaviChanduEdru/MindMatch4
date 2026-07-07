@@ -76,56 +76,39 @@ export function countStones(board) {
 /* ── AI move selection ── */
 
 /**
- * Score a line of 5 consecutive cells for a given player.
- * Returns a heuristic value based on how many friendly/enemy stones are in the window.
+ * Strength of a run of `count` friendly stones with `openEnds` empty ends.
+ * Open-ended patterns are far more dangerous than blocked ones — an open four
+ * (both ends free) is an unstoppable win, a blocked four is a single threat,
+ * and an open three converts into an open four. The old window-sum heuristic
+ * could not tell these apart, so the AI ignored open threes.
  */
-function scoreWindow(window, player) {
-  const mine = window.filter((c) => c === player).length;
-  const opp = window.filter((c) => c === -player).length;
-
-  if (mine === 5) return 100000;
-  if (opp === 5) return -100000;
-  if (mine === 4 && opp === 0) return 10000;
-  if (opp === 4 && mine === 0) return -50000; // block opponent 4
-  if (mine === 3 && opp === 0) return 1000;
-  if (opp === 3 && mine === 0) return -4000;
-  if (mine === 2 && opp === 0) return 100;
-  if (opp === 2 && mine === 0) return -100;
+function patternScore(count, openEnds) {
+  if (count >= 5) return 10000000; // five in a row (win)
+  if (count === 4) return openEnds >= 2 ? 1000000 : openEnds === 1 ? 100000 : 0;
+  if (count === 3) return openEnds >= 2 ? 10000 : openEnds === 1 ? 1000 : 0;
+  if (count === 2) return openEnds >= 2 ? 500 : openEnds === 1 ? 100 : 0;
+  if (count === 1) return openEnds >= 2 ? 20 : 10;
   return 0;
 }
 
-function evaluateBoard(board, player) {
-  let score = 0;
-  const size = GOMOKU_SIZE;
-
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
-      for (const [dr, dc] of DIRECTIONS) {
-        const window = [];
-        for (let i = 0; i < 5; i++) {
-          const nr = r + dr * i;
-          const nc = c + dc * i;
-          if (!inBounds(nr, nc)) break;
-          window.push(board[nr][nc]);
-        }
-        if (window.length === 5) {
-          score += scoreWindow(window, player);
-        }
-      }
-    }
+/**
+ * Best line strength obtainable by placing `player` at (r,c). The target cell
+ * is treated as occupied by `player` (it is empty on the real board); the four
+ * directions through it are measured for consecutive run length and open ends.
+ */
+function lineStrength(board, r, c, player) {
+  let best = 0;
+  for (const [dr, dc] of DIRECTIONS) {
+    let count = 1;
+    let fr = r + dr, fc = c + dc;
+    while (inBounds(fr, fc) && board[fr][fc] === player) { count++; fr += dr; fc += dc; }
+    const forwardOpen = inBounds(fr, fc) && board[fr][fc] === 0;
+    let br = r - dr, bc = c - dc;
+    while (inBounds(br, bc) && board[br][bc] === player) { count++; br -= dr; bc -= dc; }
+    const backOpen = inBounds(br, bc) && board[br][bc] === 0;
+    best = Math.max(best, patternScore(count, (forwardOpen ? 1 : 0) + (backOpen ? 1 : 0)));
   }
-
-  // Center bias — stones closer to center score slightly higher
-  const mid = Math.floor(size / 2);
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
-      if (board[r][c] === player) {
-        score += Math.max(0, 4 - Math.max(Math.abs(r - mid), Math.abs(c - mid)));
-      }
-    }
-  }
-
-  return score;
+  return best;
 }
 
 /** Collect empty cells adjacent (within distance 2) to any existing stone. */
@@ -187,39 +170,44 @@ export function pickBestGomokuMove(board, player, difficulty = "Hard") {
     return { ...move, score: 0, note: generateNote(board, move, player) };
   }
 
-  // Score all candidates
+  const opp = -player;
+  const mid = Math.floor(GOMOKU_SIZE / 2);
+
+  // Score each candidate by the best of (our own threat created here) and
+  // (the opponent threat we deny by taking this cell). Completing five and
+  // blocking the opponent's five both fall out of this naturally, as do
+  // making/blocking open fours and open threes. Offense is nudged above an
+  // equal defense so we press a win rather than defend when both exist.
   const scored = candidates.map((move) => {
-    const next = cloneBoard(board);
-    next[move.row][move.col] = player;
-    let score = evaluateBoard(next, player);
-
-    // Medium: basic heuristic, no lookahead
-    if (difficulty === "Medium") {
-      return { ...move, score };
-    }
-
-    // Hard/Expert/Auto: also consider opponent's best reply
-    const oppCandidates = getCandidateMoves(next);
-    let worstReply = 0;
-    for (const opp of oppCandidates) {
-      const oppBoard = cloneBoard(next);
-      oppBoard[opp.row][opp.col] = -player;
-      const replyScore = evaluateBoard(oppBoard, player);
-      worstReply = Math.min(worstReply, replyScore);
-    }
-
-    if (difficulty === "Expert") {
-      score = score * 0.4 + worstReply * 0.6;
-    } else {
-      score = score * 0.6 + worstReply * 0.4;
-    }
-
-    return { ...move, score };
+    const offense = lineStrength(board, move.row, move.col, player);
+    const defense = lineStrength(board, move.row, move.col, opp);
+    let score = Math.max(offense * 1.05, defense);
+    // Small positional tie-breaker toward the center.
+    score += Math.max(0, 4 - Math.max(Math.abs(move.row - mid), Math.abs(move.col - mid)));
+    return { ...move, offense, defense, score };
   });
-
   scored.sort((a, b) => b.score - a.score);
 
-  // Auto: blend — early game has randomness
+  // Hard/Expert: shallow one-ply search over the strongest candidates —
+  // penalise moves that hand the opponent a bigger threat on their reply.
+  if (difficulty === "Hard" || difficulty === "Expert") {
+    const topN = scored.slice(0, Math.min(6, scored.length));
+    const weight = difficulty === "Expert" ? 0.9 : 0.5;
+    for (const cand of topN) {
+      const next = cloneBoard(board);
+      next[cand.row][cand.col] = player;
+      let oppBest = 0;
+      for (const om of getCandidateMoves(next)) {
+        oppBest = Math.max(oppBest, lineStrength(next, om.row, om.col, opp));
+      }
+      cand.score -= oppBest * weight;
+    }
+    topN.sort((a, b) => b.score - a.score);
+    const best = topN[0];
+    return { ...best, note: generateNote(board, best, player) };
+  }
+
+  // Auto: add a little opening randomness so games don't feel scripted.
   if (difficulty === "Auto") {
     const { empty } = countStones(board);
     const movesPlayed = GOMOKU_SIZE * GOMOKU_SIZE - empty;

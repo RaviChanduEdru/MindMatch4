@@ -92,6 +92,28 @@ test("ai picks a move on empty board", () => {
   expect(move.col).toBeGreaterThanOrEqual(0);
 });
 
+test("ai takes its own winning move", () => {
+  const board = createGomokuBoard();
+  // Black has an open four at row 7, cols 3-6; playing 2 or 7 wins.
+  for (let c = 3; c < 7; c++) board[7][c] = BLACK;
+  const move = pickBestGomokuMove(board, BLACK, "Hard");
+  expect(move.row).toBe(7);
+  expect([2, 7]).toContain(move.col);
+});
+
+test("ai blocks an opponent open three before it becomes an open four", () => {
+  const board = createGomokuBoard();
+  // White open three at row 7, cols 4-6 (both ends and beyond are empty).
+  board[7][4] = WHITE;
+  board[7][5] = WHITE;
+  board[7][6] = WHITE;
+  board[0][0] = BLACK;
+  const move = pickBestGomokuMove(board, BLACK, "Medium");
+  // The dangerous extensions are the immediate ends (7,3) and (7,7).
+  expect(move.row).toBe(7);
+  expect([3, 7]).toContain(move.col);
+});
+
 test("ai blocks opponent about to win", () => {
   const board = createGomokuBoard();
   // White has 4 in a row horizontally at row 7
