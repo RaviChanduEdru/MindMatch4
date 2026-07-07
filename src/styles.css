@@ -2982,7 +2982,7 @@
   position:absolute; width:22%; height:22%;
   display:flex; align-items:center; justify-content:center;
   border-radius:8px; font-weight:800;
-  transition:transform .12s ease;
+  transition:top .12s ease, left .12s ease, transform .12s ease;
   box-shadow:0 2px 6px rgba(0,0,0,.18);
 }
 /* 4�4 positions: row r, col c ? top: r*(22+(8/3))%? Use 25.83% spacing.
@@ -3010,6 +3010,12 @@
 @keyframes t48-spawn{
   0%   { transform:scale(.2); opacity:0; }
   100% { transform:scale(1);  opacity:1; }
+}
+.t48-tile-merged{ animation:t48-pop .16s ease; }
+@keyframes t48-pop{
+  0%   { transform:scale(1);    }
+  50%  { transform:scale(1.16); }
+  100% { transform:scale(1);    }
 }
 .t48-tile-win{ box-shadow:0 0 18px rgba(237,194,46,.7), 0 2px 6px rgba(0,0,0,.2); }
 
@@ -4027,10 +4033,75 @@
 /* Per-game start button colors */
 .start-btn-word   { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .start-btn-stroop { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.start-btn-lights { background: linear-gradient(135deg, #fbbf24, #f97316); color: #1a1a1a; }
 
 /* Game card variants for new games */
 .game-pick-card-word   { border-color: rgba(245,158,11,0.4); }
 .game-pick-card-stroop { border-color: rgba(167,139,250,0.4); }
+.game-pick-card-lights { border-color: rgba(251,191,36,0.4); }
+
+/* ─────────────────────────────────────────────
+   Lights Out
+   ───────────────────────────────────────────── */
+.lights-page {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.lights-hint {
+  text-align: center;
+  opacity: 0.7;
+  font-size: 14px;
+  margin: 4px 0 18px;
+}
+.lights-stage {
+  display: flex;
+  justify-content: center;
+}
+.lights-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--n), 1fr);
+  gap: 10px;
+  width: min(88vw, 420px);
+  aspect-ratio: 1 / 1;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.28);
+  box-shadow: inset 0 2px 12px rgba(0,0,0,0.4);
+}
+.lights-cell {
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  background: #1f2632;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04);
+  transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.08s ease;
+}
+.lights-cell:hover:not(:disabled) { transform: translateY(-2px); }
+.lights-cell:active:not(:disabled) { transform: scale(0.95); }
+.lights-cell:disabled { cursor: default; }
+.lights-cell-on {
+  background: radial-gradient(circle at 35% 30%, #fde68a, #fbbf24 55%, #f59e0b);
+  box-shadow: 0 0 18px rgba(251,191,36,0.75), inset 0 2px 6px rgba(255,255,255,0.4);
+}
+.lights-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.lights-new-btn {
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  color: #1a1a1a;
+}
+.lights-par { opacity: 0.6; font-size: 13px; }
+.lights-page.kids-mode .lights-grid { gap: 12px; }
+.lights-page.kids-mode .lights-hint { font-size: 16px; }
+
+[data-theme="light"] .lights-grid { background: rgba(0,0,0,0.12); }
+[data-theme="light"] .lights-cell { background: #d7dde6; box-shadow: inset 0 2px 6px rgba(0,0,0,0.18); }
 
 /* Mobile responsive */
 @media (max-width: 480px) {

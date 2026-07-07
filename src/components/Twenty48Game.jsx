@@ -174,7 +174,7 @@ export default function Twenty48Game({ onBack }) {
           {state.tiles.map(t => (
             <div
               key={t.id}
-              className={`t48-tile t48-pos-${t.r}-${t.c}${t.isNew ? " t48-tile-new" : ""}${t.value >= WIN_TILE ? " t48-tile-win" : ""}`}
+              className={`t48-tile t48-pos-${t.r}-${t.c}${t.isNew ? " t48-tile-new" : ""}${t.merged ? " t48-tile-merged" : ""}${t.value >= WIN_TILE ? " t48-tile-win" : ""}`}
               style={tileStyle(t.value)}
             >
               {t.value}

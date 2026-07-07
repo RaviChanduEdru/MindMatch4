@@ -37,80 +37,90 @@ export function spawnTile(state, fromInit = false) {
 }
 
 /* ── Move logic ──
-   We rotate the grid so all moves become "left", run the slide, then rotate back. */
+   Tiles are tracked by identity so the UI can animate slides and merges.
+   For each line (row or column) in the direction of travel we walk the tiles
+   front-first, merging equal neighbours. Surviving and merged tiles keep a
+   stable id (a merge keeps the front tile's id and flags `merged`), so React
+   reuses the DOM node and the CSS position transition animates. Rebuilding the
+   tile list with fresh ids every move — as before — remounted every tile and
+   killed the animation. */
 
-function rotateCW(grid) {
-  const out = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
-  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) out[c][SIZE - 1 - r] = grid[r][c];
-  return out;
-}
-function rotateCCW(grid) {
-  const out = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
-  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) out[SIZE - 1 - c][r] = grid[r][c];
-  return out;
-}
-
-function slideLeftRow(row) {
-  const filtered = row.filter(v => v !== 0);
-  const out = [];
-  let gained = 0;
-  let merges = 0;
-  for (let i = 0; i < filtered.length; i++) {
-    if (i + 1 < filtered.length && filtered[i] === filtered[i + 1]) {
-      const merged = filtered[i] * 2;
-      out.push(merged);
-      gained += merged;
-      merges++;
-      i++;
-    } else {
-      out.push(filtered[i]);
+/** The four lines for a direction, each as [r,c] cells in travel order (the
+ *  destination edge first). */
+function linePositions(dir) {
+  const lines = [];
+  for (let i = 0; i < SIZE; i++) {
+    const line = [];
+    for (let j = 0; j < SIZE; j++) {
+      if (dir === "left") line.push([i, j]);
+      else if (dir === "right") line.push([i, SIZE - 1 - j]);
+      else if (dir === "up") line.push([j, i]);
+      else line.push([SIZE - 1 - j, i]); // down
     }
+    lines.push(line);
   }
-  while (out.length < SIZE) out.push(0);
-  const moved = !row.every((v, i) => v === out[i]);
-  return { row: out, gained, merges, moved };
+  return lines;
 }
 
-function slideLeft(grid) {
-  let gained = 0, moved = false, merges = 0;
-  const next = grid.map(row => {
-    const r = slideLeftRow(row);
-    gained += r.gained; merges += r.merges; if (r.moved) moved = true;
-    return r.row;
-  });
-  return { grid: next, gained, moved, merges };
+function gridsEqual(a, b) {
+  for (let r = 0; r < SIZE; r++)
+    for (let c = 0; c < SIZE; c++) if (a[r][c] !== b[r][c]) return false;
+  return true;
 }
 
 /**
- * Slide direction: "left" | "right" | "up" | "down"
- * Returns new state. Does not spawn a new tile if no tile moved.
+ * Slide direction: "left" | "right" | "up" | "down".
+ * Returns the next state, preserving tile identity. Does not spawn a new tile
+ * if nothing moved.
  */
 export function slide(state, dir) {
   if (state.over) return state;
-  let g = state.grid;
-  if (dir === "up") g = rotateCCW(g);
-  else if (dir === "down") g = rotateCW(g);
-  else if (dir === "right") g = g.map(row => row.slice().reverse());
 
-  const res = slideLeft(g);
-  if (!res.moved) return state;
+  const tileAt = new Map();
+  for (const t of state.tiles) tileAt.set(t.r * SIZE + t.c, t);
 
-  let next = res.grid;
-  if (dir === "up") next = rotateCW(next);
-  else if (dir === "down") next = rotateCCW(next);
-  else if (dir === "right") next = next.map(row => row.reverse());
-
-  // Rebuild tile list from grid (simpler + reliable for animations).
+  const grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
   const tiles = [];
-  let won = state.won;
-  for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) {
-    if (next[r][c]) {
-      tiles.push({ id: nextId(), r, c, value: next[r][c], isNew: false, merged: false });
-      if (next[r][c] >= WIN_TILE) won = true;
+  let gained = 0, merges = 0, won = state.won;
+
+  for (const line of linePositions(dir)) {
+    const present = [];
+    for (const [r, c] of line) {
+      const t = tileAt.get(r * SIZE + c);
+      if (t) present.push(t);
+    }
+    const out = [];
+    for (let i = 0; i < present.length; i++) {
+      if (i + 1 < present.length && present[i].value === present[i + 1].value) {
+        const value = present[i].value * 2;
+        out.push({ id: present[i].id, value, merged: true });
+        gained += value;
+        merges++;
+        i++; // consume the tile that merged in
+      } else {
+        out.push({ id: present[i].id, value: present[i].value, merged: false });
+      }
+    }
+    for (let k = 0; k < out.length; k++) {
+      const [r, c] = line[k];
+      grid[r][c] = out[k].value;
+      tiles.push({ id: out[k].id, r, c, value: out[k].value, isNew: false, merged: out[k].merged });
+      if (out[k].value >= WIN_TILE) won = true;
     }
   }
 
-  let after = { ...state, grid: next, tiles, score: state.score + res.gained, moves: state.moves + 1, won, lastGain: res.gained, lastMerges: res.merges };
+  if (gridsEqual(grid, state.grid)) return state;
+
+  let after = {
+    ...state,
+    grid,
+    tiles,
+    score: state.score + gained,
+    moves: state.moves + 1,
+    won,
+    lastGain: gained,
+    lastMerges: merges,
+  };
   after = spawnTile(after);
   after.over = !canMove(after.grid);
   return after;
